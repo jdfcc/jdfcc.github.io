@@ -6,7 +6,7 @@
   <link href="https://jdfcc.github.io/atom.xml" rel="self"/>
   
   <link href="https://jdfcc.github.io/"/>
-  <updated>2022-11-17T08:30:13.323Z</updated>
+  <updated>2022-11-18T05:54:11.176Z</updated>
   <id>https://jdfcc.github.io/</id>
   
   <author>
@@ -17,11 +17,31 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>测试文章</title>
+    <link href="https://jdfcc.github.io/posts/7a6a6b5a/"/>
+    <id>https://jdfcc.github.io/posts/7a6a6b5a/</id>
+    <published>2022-11-18T05:19:23.000Z</published>
+    <updated>2022-11-18T05:54:11.176Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="这是一篇测试文章"><a href="#这是一篇测试文章" class="headerlink" title="这是一篇测试文章"></a>这是一篇测试文章</h1><p><img src="/assets/img/img.jpg" alt="沙漠中的岩石图片" title="Shiprock"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;这是一篇测试文章&quot;&gt;&lt;a href=&quot;#这是一篇测试文章&quot; class=&quot;headerlink&quot; title=&quot;这是一篇测试文章&quot;&gt;&lt;/a&gt;这是一篇测试文章&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;/assets/img/img.jpg&quot; alt=&quot;沙漠中的岩石图片&quot; </summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>Hello World</title>
     <link href="https://jdfcc.github.io/posts/4a17b156/"/>
     <id>https://jdfcc.github.io/posts/4a17b156/</id>
     <published>2022-11-17T08:01:47.593Z</published>
-    <updated>2022-11-17T08:30:13.323Z</updated>
+    <updated>2022-11-18T05:53:38.217Z</updated>
     
     <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
     
@@ -41,7 +61,7 @@
     <link href="https://jdfcc.github.io/posts/0/"/>
     <id>https://jdfcc.github.io/posts/0/</id>
     <published>2022-11-17T01:23:11.000Z</published>
-    <updated>2022-11-17T14:55:11.001Z</updated>
+    <updated>2022-11-18T05:43:49.925Z</updated>
     
     <content type="html"><![CDATA[<p><a name="72ba0458"></a></p><h2 id="1-nacos和eureka共同点："><a href="#1-nacos和eureka共同点：" class="headerlink" title="1.nacos和eureka共同点："></a>1.nacos和eureka共同点：</h2><ul><li><p>都支持服务注册和服务拉取</p></li><li><p>都支持服务提供者心跳检测</p></li></ul><p><a name="05bcda1a"></a></p><h2 id="2-nacos和eureka区别："><a href="#2-nacos和eureka区别：" class="headerlink" title="2.nacos和eureka区别："></a>2.nacos和eureka区别：</h2><p>1.nacos支持服务端主动检测提供者模式</p><ul><li><p>临时实例采用心跳模式</p></li><li><p>非临时实例采用主动检测模式(对服务器压力较大)</p></li></ul><p>2.临时实例心跳不正常时nacos会主动剔除实例，非临时实例则不会被剔除</p><p>3.nacos集群默认采用ap模式,当集群中存在非临时实例时采用cp模式；eureka采用ap模式。</p>]]></content>
     
