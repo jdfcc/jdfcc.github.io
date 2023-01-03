@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://jdfcc.github.io/posts/c245f14/</loc>
+    
+    <lastmod>2022-12-25</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://jdfcc.github.io/posts/c245f14/</loc>
+    
+    <lastmod>2022-12-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://jdfcc.github.io/posts/12/</loc>
     
     <lastmod>2022-11-20</lastmod>
@@ -58,11 +76,18 @@
 
   <url>
     <loc>https://jdfcc.github.io/</loc>
-    <lastmod>2022-12-18</lastmod>
+    <lastmod>2023-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
+  
+  <url>
+    <loc>https://jdfcc.github.io/tags/study/</loc>
+    <lastmod>2023-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
   
 
   
