@@ -63,7 +63,7 @@ kramdown:
 gitalk:
   enable: true    #是否开启Gitalk评论
   clientID: Ov23lieiWAvYkV0L9u6r                            #生成的clientID
-  clientSecret: 9d85086cfe02806a7ba854878958013c216480f4    #生成的clientSecret
+  clientSecret: 769fda122faf403c1e42f823d2c97978099720a6    #生成的clientSecret
   repo: jdfcc.github.io    #仓库名称
   owner: jdfcc    #github用户名
   admin: jdfcc
