@@ -11,7 +11,7 @@ github_repo: "https://github.com/jdfcc/jdfcc.github.io.git" # you code repositor
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "Goals determine what you going to be!"
+sidebar-about-description: "3"
 sidebar-avatar: /img/about-BY-gentle.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
@@ -67,14 +67,14 @@ gitalk:
   repo: jdfcc.github.io    #仓库名称
   owner: jdfcc    #github用户名
   admin: jdfcc
-  distractionFreeMode: true #是否启用类似FB的阴影遮罩
+  distractionFreeMode: false #是否启用类似FB的阴影遮罩
 
 
 # 统计
 
 # Analytics settings
 # Baidu Analytics
-ba_track_id: 00dc81566752426dd095cdaa80fc3a66
+# ba_track_id: 00dc81566752426dd095cdaa80fc3a66
 
 # Google Analytics
 ga_track_id: 'G-KHX9XKKWB7'            # Format: UA-xxxxxx-xx
