@@ -116,3 +116,21 @@ friends: [
     #     href: "https://developer.apple.com/"
     # }
 ]
+
+
+# 确保 Jekyll 构建时可以找到 assets 目录
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      image_base: /assets/
+
+# 让 markdown 图片引用相对路径时，自动拼上 site.baseurl 或 image_base
+markdown: kramdown
+kramdown:
+  input: GFM
+  parse_block_html: true
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
