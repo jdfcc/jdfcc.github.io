@@ -1,4 +1,4 @@
-name: Build and Deploy Jekyll with Plugins
+name: Build and Deploy Jekyll Custom
 
 on:
   push:
@@ -26,7 +26,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
-          bundler-cache: true
 
       - name: Install dependencies
         run: bundle install
@@ -40,12 +39,11 @@ jobs:
           path: _site
 
   deploy:
+    runs-on: ubuntu-latest
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
