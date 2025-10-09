@@ -1,57 +1,235 @@
 ---
 layout: page
-title: "About"
-description: "Hey, this is BY."
-header-img: "img/post-bg-rwd.jpg"
+title: "About Me"
 ---
-
-<!-- Language Selector -->
-<!-- <select class="sel-lang" onchange= "onLanChange(this.options[this.options.selectedIndex].value)">
-    <option value="0" selected> 中文 Chinese </option>
-    <option value="1"> 英文 English </option>
-</select> -->
 
 <!-- Chinese Version -->
 <div class="zh post-container">
+    没啥好说的，<br>
+    <br>
+    点我播放 <strong>哈基米</strong>⬇️⬇️⬇️⬇️
 
-    <!--copied from markdown -->
-    <!-- <blockquote><p>冰冻三尺 非一日之寒<br>
-    积土成山 非斯须之作</p></blockquote> -->
-
-    <p>Hello</p>
-
-    <p></p>
-    
-    <!-- <h5>Talks</h5> -->
-
-    <!-- <ul>
-        <li><a href="https://github.com">GitHub</a></li>
-        <li><a href="http://jekyll.com.cn/">jekyll</a></li>
-        <li><a href="http://huangxuan.me/">Hux</a></li> 
-        <li><a href="https://analytics.google.com/analytics">Google Analytics</a></li>
-    </ul> -->
 </div>
 
-<!-- English Version -->
-<!-- <div class="en post-container">
-    <blockquote><p>Yet another iOS Developer. <br>
-    Yet another Life-long Student.</p></blockquote>
 
-    <p>Hi, I am <strong>Baiying Qiu</strong>，you can call me <strong>BY</strong>. I am an iOS software engineer and currently working in Xiamen</p>
+<div class="player">
+    <div class="player-cover">
+        <img src="{{ '/assets/majimi.jpg' | relative_url }}" alt="cover" id="coverImg">
+        <button class="play-btn" id="playBtn">►</button>
+    </div>
+    <div class="progress-info" id="progressInfo">00:00 / 00:00</div>
+    <div class="progress-container" id="progressContainer">
+        <div class="progress" id="progress"></div>
+    </div>
+    <audio id="audio" src="{{ '/assets/hajimi.mp3' | relative_url }}"></audio>
+</div>
 
-    <p>This is my personal blog, through making Github Pages and Jekyll.My GitHub  👉 <a href="http://github.com/qiubaiying">Github·BY</a>.</p>
-    
-    <p>I am a sports enthusiast, I like fitness, running and boxing.</p>
 
-    <h5>Talks</h5>
+<style>
+    .progress-info {
+        font-size: 0.85rem;
+        color: #333;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
 
-    <ul>
-    <li><a href="https://github.com">GitHub</a></li>
-    <li><a href="http://jekyll.com.cn/">jekyll</a></li>
-    <li><a href="https://pages.github.com/">GitHub Pages</a></li>
-    <li><a href="https://qiubaiying.github.io">BY</a></li>
-    </ul>
-</div> -->
+    .player {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f9f9f9;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 480px;
+        margin: 1rem auto;
+        flex-wrap: nowrap;
+        box-sizing: border-box;
+    }
+
+    /* 封面+按钮容器 */
+    .player-cover {
+        position: relative;
+        /* ✅ 关键 */
+        width: clamp(60px, 15vw, 90px);
+        height: clamp(60px, 15vw, 90px);
+        flex-shrink: 0;
+    }
+
+    .player-cover img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        z-index: 1;
+    }
+
+    .play-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: clamp(36px, 10vw, 56px);
+        height: clamp(36px, 10vw, 56px);
+        background: transparent;
+        /* 背景透明 */
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        /* ✅ 白色半透明边框更清晰 */
+        border-radius: 50%;
+        color: #fff;
+        /* 符号颜色 */
+        font-size: 1.3rem;
+        /* 稍微大一点 */
+        font-weight: bold;
+        /* 更明显 */
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        transition: transform 0.2s ease, filter 0.2s ease, border-color 0.2s ease;
+    }
+
+    /* 播放中放大效果 */
+    .play-btn.playing {
+        transform: translate(-50%, -50%) scale(1.15);
+        border-color: rgba(66, 68, 68, 0.9);
+        /* 播放中边框变色 */
+    }
+
+    /* 悬停/按下动画提示 */
+    .play-btn:hover {
+        transform: translate(-50%, -50%) scale(1.2);
+        filter: brightness(1.3);
+    }
+
+    .play-btn:active {
+        transform: translate(-50%, -50%) scale(1.1);
+        filter: brightness(1.1);
+    }
+
+
+
+    /* 进度条 */
+    .progress-container {
+        flex: 1;
+        height: 6px;
+        background: #ddd;
+        border-radius: 3px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .progress {
+        height: 100%;
+        width: 0%;
+        background: #212020;
+        border-radius: 3px;
+        transition: width 0.2s linear;
+    }
+
+    /* 旋转动画 */
+    @keyframes rotateCover {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .player-cover img.playing {
+        animation: rotateCover 6s linear infinite;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const playBtn = document.getElementById('playBtn');
+        const coverImg = document.getElementById('coverImg');
+        const audio = document.getElementById('audio');
+        const progressContainer = document.getElementById('progressContainer');
+        const progress = document.getElementById('progress');
+        const progressInfo = document.getElementById('progressInfo');
+
+        let rotation = 0, lastTime = null, animating = false, rafId = null, isDragging = false;
+
+        const formatTime = s => `${Math.floor(s / 60).toString().padStart(2, '0')}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
+        const updateInfo = () => progressInfo.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration || 0)}`;
+
+        function rotateFrame(ts) {
+            if (!lastTime) lastTime = ts;
+            rotation += ((ts - lastTime) / 1000) * 60;
+            lastTime = ts;
+            coverImg.style.transform = `rotate(${rotation % 360}deg)`;
+            if (animating) rafId = requestAnimationFrame(rotateFrame);
+        }
+
+        const setAudioTime = e => {
+            if (!audio.duration || isNaN(audio.duration)) {
+                console.log('⚠️ duration 无效:', audio.duration);
+                return;
+            }
+            console.log('seekable.length =', audio.seekable.length);
+            if (audio.seekable.length > 0) {
+                console.log('seekable range =', audio.seekable.start(0), '-', audio.seekable.end(0));
+            }
+            console.log('duration =', audio.duration);
+            console.log('readyState =', audio.readyState);
+
+
+
+            const rect = progressContainer.getBoundingClientRect();
+            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const ratio = Math.max(0, Math.min(1, x / rect.width));
+
+            console.log('点击位置比例:', ratio);
+
+            console.log('设置前:', audio.currentTime);
+            audio.currentTime = ratio * audio.duration;
+            console.log('设置后:', audio.currentTime);
+
+            progress.style.width = (ratio * 100) + '%';
+            updateInfo();
+        };
+        audio.addEventListener('seeked', () => console.log('✅ seeked 事件触发，当前位置', audio.currentTime));
+
+
+        playBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = '❚❚';
+                if (!animating) { animating = true; lastTime = null; rafId = requestAnimationFrame(rotateFrame); }
+            } else {
+                audio.pause();
+                playBtn.textContent = '►';
+                animating = false; cancelAnimationFrame(rafId);
+            }
+        });
+
+        audio.addEventListener('timeupdate', () => { if (!isDragging && audio.duration) progress.style.width = (audio.currentTime / audio.duration * 100) + '%'; updateInfo(); });
+        audio.addEventListener('loadedmetadata', updateInfo);
+        audio.addEventListener('ended', () => { animating = false; cancelAnimationFrame(rafId); playBtn.textContent = '►'; });
+
+        progressContainer.addEventListener('mousedown', e => {
+            isDragging = true; setAudioTime(e);
+            const onMove = eMove => setAudioTime(eMove);
+            const onUp = () => { isDragging = false; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+            document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
+        });
+        progressContainer.addEventListener('touchstart', e => {
+            isDragging = true; setAudioTime(e);
+            const onMove = eMove => setAudioTime(eMove);
+            const onEnd = () => { isDragging = false; document.removeEventListener('touchmove', onMove); document.removeEventListener('touchend', onEnd); };
+            document.addEventListener('touchmove', onMove); document.addEventListener('touchend', onEnd);
+        });
+        progressContainer.addEventListener('click', e => { if (!isDragging) setAudioTime(e); });
+    });
+
+</script>
 
 <!-- Handle Language Change -->
 <script type="text/javascript">
@@ -64,15 +242,15 @@ header-img: "img/post-bg-rwd.jpg"
     window.addEventListener('hashchange', _render);
 
     // handle render
-    function _render(){
+    function _render() {
         var _hash = window.location.hash;
         // en
-        if(_hash == "#en"){
+        if (_hash == "#en") {
             $select.selectedIndex = 1;
             $en.style.display = "block";
             $zh.style.display = "none";
-        // zh by default
-        }else{
+            // zh by default
+        } else {
             // not trigger onChange, otherwise cause a loop call.
             $select.selectedIndex = 0;
             $zh.style.display = "block";
@@ -81,10 +259,10 @@ header-img: "img/post-bg-rwd.jpg"
     }
 
     // handle select change
-    function onLanChange(index){
-        if(index == 0){
+    function onLanChange(index) {
+        if (index == 0) {
             window.location.hash = "#zh"
-        }else{
+        } else {
             window.location.hash = "#en"
         }
     }
@@ -101,38 +279,34 @@ header-img: "img/post-bg-rwd.jpg"
 <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
 
 <div id="gitalk-container"></div>
-    <script type="text/javascript">
+<script type="text/javascript">
     var gitalk = new Gitalk({
-    clientID: '{{site.gitalk.clientID}}',
-    clientSecret: '{{site.gitalk.clientSecret}}',
-    repo: '{{site.gitalk.repo}}',
-    owner: '{{site.gitalk.owner}}',
-    admin: ['{{site.gitalk.admin}}'],
-    distractionFreeMode: {{site.gitalk.distractionFreeMode}},
+        clientID: '{{site.gitalk.clientID}}',
+        clientSecret: '{{site.gitalk.clientSecret}}',
+        repo: '{{site.gitalk.repo}}',
+        owner: '{{site.gitalk.owner}}',
+        admin: ['{{site.gitalk.admin}}'],
+        distractionFreeMode: {{ site.gitalk.distractionFreeMode }},
     id: 'about',
     });
     gitalk.render('gitalk-container');
 </script>
 {% endif %}
-<!-- Gitalk end -->
 
- <!-- disqus 评论框 start  -->
 {% if site.disqus.enable %}
 
 <div class="comment">
     <div id="disqus_thread" class="disqus-thread">
     </div>
 </div>
-<!-- disqus 评论框 end -->
 
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "{{site.disqus.username}}";
     var disqus_identifier = "{{site.disqus.username}}/{{page.url}}";
     var disqus_url = "{{site.url}}{{page.url}}";
 
-    (function() {
+    (function () {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
@@ -140,4 +314,3 @@ header-img: "img/post-bg-rwd.jpg"
 </script>
 <!-- disqus 公共JS代码 end -->
 {% endif %}
-
