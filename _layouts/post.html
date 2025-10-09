@@ -58,7 +58,7 @@ layout: default
                 col-md-10 col-md-offset-1
                 post-container">
 
-                {{ content | replace: '](assets/', '](/assets/' ) | replace: '](./assets/', '](/assets/' ) }}
+{{ content | replace: 'src="assets/', 'src="/assets/' | replace: 'src="./assets/', 'src="/assets/' }}
 
                 <hr style="visibility: hidden;">
 
