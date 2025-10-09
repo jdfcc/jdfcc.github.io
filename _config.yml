@@ -139,3 +139,9 @@ collections:
   articles:
     output: true
     permalink: /articles/:name
+
+exclude:
+  - LICENSE
+  - README.md
+  - CNAME
+  - vendor
