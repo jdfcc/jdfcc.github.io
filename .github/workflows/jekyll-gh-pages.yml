@@ -21,6 +21,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      
+      - name: Add default date to posts
+        run: |
+          for file in _posts/*.md; do
+            if ! grep -q "^date:" "$file"; then
+              # 在 Front Matter 添加默认 date
+              sed -i "0,/^---$/s/^---$/---\ndate: 2025-01-01/" "$file"
+            fi
+            # 如果文件名没有日期，给它加上
+            if [[ ! $(basename "$file") =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}- ]]; then
+              mv "$file" "$(dirname "$file")/2025-01-01-$(basename "$file")"
+            fi
+          done
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
