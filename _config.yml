@@ -134,3 +134,8 @@ kramdown:
   syntax_highlighter_opts:
     block:
       line_numbers: false
+
+collections:
+  articles:
+    output: true
+    permalink: /articles/:name
