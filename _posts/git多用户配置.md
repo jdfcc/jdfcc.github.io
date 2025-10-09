@@ -1,0 +1,79 @@
+## 生成不同的SSH密钥
+
+要在同一台电脑上同时使用GitHub和GitLab账户，你可以设置不同的SSH密钥，并在配置文件中指定使用哪个密钥连接到哪个远程仓库。以下是具体步骤：
+
+### 1. 生成SSH密钥
+
+如果你还没有为你的GitLab账户生成SSH密钥，你需要生成一个新的SSH密钥。使用以下命令生成一个新的SSH密钥（记得替换email@example.com为你的邮箱地址）：
+
+```
+ssh-keygen -t rsa -C "hyadong@linewell.com" -f %USERPROFILE%\.ssh\id_rsa_gitlab
+```
+
+这将会生成一个名为 `id_rsa_gitlab` 和 `id_rsa_gitlab.pub` 的文件在 `~/.ssh/` 目录下。
+
+### 2. 添加SSH公钥到GitLab
+
+将 `~/.ssh/id_rsa_gitlab.pub` 文件的内容添加到你的GitLab账户的SSH密钥中。具体步骤是登录GitLab后，进入“Settings” -> “SSH Keys”，然后将公钥内容粘贴进去并保存。使用同样的步骤生成Github密钥并将对应的密钥储存进Github服务器中
+
+### 3. 配置SSH配置文件
+
+编辑或创建 `C:/Users/30398/.ssh/config` 文件，添加以下内容：
+
+```
+# GitHub 配置
+Host github.com
+    HostName github.com
+    User jdfcc
+    IdentityFile C:/Users/30398/.ssh/id_rsa_github
+
+# GitLab 配置
+Host git.linewellcloud.com
+    HostName git.linewellcloud.com
+    User hyadong
+    IdentityFile C:/Users/30398/.ssh/id_rsa_gitlab
+```
+
+这样，当你连接到Github时会使用的 `id_rsa_github` 密钥，而连接到Gitlab时会使用新的 `id_rsa_gitlab` 密钥。
+
+## 配置文件修改
+
+同时还需针对特定文件夹设置Git配置，以确保该文件夹及其子文件夹中的所有项目使用对应的Git配置，而其他项目使用个人配置。这可以通过Git的包含配置（includeIf）功能实现。
+
+### 使用 `.gitconfig` 的 `includeIf` 进行目录级别的配置
+
+以下是具体步骤：
+
+### 1. 全局配置（个人配置）
+
+首先，设置全局配置，这通常是你的个人GitHub账户信息：
+
+```
+git config --global user.name "jdfcc"
+git config --global user.email "3039898075@qq.com"
+```
+
+### 2. 创建目录级别的配置文件
+
+假设你的Gitlab项目位于 `D:\CompanyProjects` 文件夹中。我们将创建一个新的配置文件来包含公司项目的Git设置。
+
+在用户主目录下（通常是 `C:\Users\你的用户名`），创建或编辑 `~/.gitconfig` 文件：
+
+然后添加以下内容：
+
+```
+[includeIf "gitdir:D:/CompanyProjects/"]
+    path = D:/CompanyProjects/.gitconfig
+```
+
+### 3. 创建公司配置文件
+
+在 `D:\CompanyProjects` 目录下，创建一个 `.gitconfig` 文件：
+
+在该文件中，添加Gitlab的相关配置：
+
+```
+[user]
+    name = {{gitlabName}}
+    email = hyadong@linewell.com
+```
