@@ -54,7 +54,7 @@ layout: default
             {% endif %}
 
             <!-- Friends Blog -->
-            {% if site.friends %}
+            {% if site.friends and site.friends.size > 0 %}
             <hr>
             <h5>FRIENDS</h5>
             <ul class="list-inline">
@@ -204,7 +204,7 @@ layout: default
 
 
             <!-- Friends Blog -->
-            {% if site.friends %}
+            {% if site.friends and site.friends.size > 0 %}
             <hr>
             <h5>FRIENDS</h5>
             <ul class="list-inline">
