@@ -1,6 +1,6 @@
 # Site settings
-title: Jdfcc Blog
-SEOTitle: jdfcc | BY Blog
+title: Jdfcc`s Blog
+SEOTitle: jdfcc 
 header-img: img/post-bg-desk.jpg
 email: hyd3039@gmail.com
 description: "Gravity always wins"
@@ -11,7 +11,7 @@ github_repo: "https://github.com/jdfcc/jdfcc.github.io.git" # you code repositor
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "3"
+sidebar-about-description: "经验+3"
 sidebar-avatar: /img/about-BY-gentle.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 plugins:
