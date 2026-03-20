@@ -1,25 +1,717 @@
 ---
 layout: default
-description: "你来到了没有知识的荒原 🙊"
-header-img: "img/404-bg.jpg"
+description: "你来到了没有知识的荒原"
 permalink: /404.html
 ---
 
+<style>
+/* ===== 全局 ===== */
+.error-page {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    cursor: none;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
 
-<!-- Page Header -->
-<header class="intro-header" style="background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}')">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-				<div class="site-heading" id="tag-heading">
-					<h1>404</h1>
-					<span class="subheading">{{ page.description }}</span>
-				</div>
-			</div>
-		</div>
-	</div>
-</header>
+/* ===== 天空渐变 ===== */
+.sky {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    transition: none;
+}
+
+/* ===== 星星 ===== */
+.stars-layer {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 60%;
+    transition: opacity 0.8s ease;
+}
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+}
+
+/* ===== 天体 ===== */
+.celestial {
+    position: absolute;
+    transition: opacity 0.6s ease;
+}
+.moon {
+    width: 60px; height: 60px;
+    top: 12%;
+    left: 15%;
+    background: #e8e8e0;
+    border-radius: 50%;
+    box-shadow: inset -8px -2px 0 #d4d4c8, 0 0 30px rgba(255,255,220,0.3);
+}
+.moon-crater {
+    position: absolute;
+    background: rgba(180,180,170,0.4);
+    border-radius: 50%;
+}
+.sun {
+    width: 70px; height: 70px;
+    top: 10%;
+    right: 15%;
+    background: radial-gradient(circle, #fff6d5, #ffd93d, #ff9a3c);
+    border-radius: 50%;
+    box-shadow: 0 0 60px rgba(255,217,61,0.5), 0 0 120px rgba(255,154,60,0.2);
+}
+
+/* ===== 云 ===== */
+.clouds {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 40%;
+    pointer-events: none;
+}
+.cloud {
+    position: absolute;
+    background: white;
+    border-radius: 50px;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+}
+
+.cloud-1 { width: 100px; height: 30px; top: 18%; left: 55%; }
+.cloud-1::before { width: 44px; height: 44px; top: -22px; left: 16px; }
+.cloud-1::after { width: 30px; height: 30px; top: -14px; left: 52px; }
+
+.cloud-2 { width: 70px; height: 22px; top: 28%; left: 72%; }
+.cloud-2::before { width: 32px; height: 32px; top: -18px; left: 12px; }
+.cloud-2::after { width: 22px; height: 22px; top: -10px; left: 38px; }
+
+.cloud-3 { width: 85px; height: 26px; top: 14%; left: 82%; }
+.cloud-3::before { width: 38px; height: 38px; top: -20px; left: 14px; }
+.cloud-3::after { width: 26px; height: 26px; top: -12px; left: 46px; }
+
+/* ===== 地面 ===== */
+.ground {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 25%;
+}
+.ground-fill {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 100%;
+    transition: none;
+}
+.ground-line {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.15);
+    transition: background 0.8s ease;
+}
+
+/* ===== 小草 ===== */
+.grass-container {
+    position: absolute;
+    top: -4px; left: 0; right: 0;
+    height: 20px;
+    pointer-events: none;
+}
+.grass {
+    position: absolute;
+    bottom: 0;
+    width: 2px;
+    background: currentColor;
+    border-radius: 1px 1px 0 0;
+    transform-origin: bottom center;
+}
+
+/* ===== 404 文字 ===== */
+.text-404 {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(5rem, 15vw, 12rem);
+    font-weight: 900;
+    pointer-events: none;
+    transition: color 0.8s ease, text-shadow 0.8s ease;
+    opacity: 0.12;
+    letter-spacing: 0.05em;
+}
+
+/* ===== 可爱小人 (CSS绘制) ===== */
+.character {
+    position: absolute;
+    bottom: 25%;
+    width: 40px;
+    height: 70px;
+    transform: translateX(-50%);
+    transition: none;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* 头 */
+.char-head {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 26px; height: 26px;
+    background: #ffe0bd;
+    border-radius: 50%;
+    z-index: 2;
+}
+/* 腮红 */
+.char-head::before {
+    content: '';
+    position: absolute;
+    width: 6px; height: 4px;
+    background: rgba(255,150,150,0.5);
+    border-radius: 50%;
+    bottom: 6px; left: 2px;
+}
+.char-head::after {
+    content: '';
+    position: absolute;
+    width: 6px; height: 4px;
+    background: rgba(255,150,150,0.5);
+    border-radius: 50%;
+    bottom: 6px; right: 2px;
+}
+/* 头发 */
+.char-hair {
+    position: absolute;
+    top: -2px; left: 50%;
+    transform: translateX(-50%);
+    width: 30px; height: 16px;
+    background: #4a3728;
+    border-radius: 15px 15px 0 0;
+    z-index: 3;
+}
+.char-hair::before {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: -1px;
+    width: 8px; height: 10px;
+    background: #4a3728;
+    border-radius: 0 0 2px 6px;
+}
+.char-hair::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; right: -1px;
+    width: 8px; height: 10px;
+    background: #4a3728;
+    border-radius: 0 0 6px 2px;
+}
+/* 眼睛 */
+.char-eyes {
+    position: absolute;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 14px; height: 5px;
+    z-index: 4;
+}
+.char-eye {
+    position: absolute;
+    width: 4px; height: 5px;
+    background: #2c1810;
+    border-radius: 50%;
+    animation: blink 4s ease-in-out infinite;
+}
+.char-eye.left { left: 0; }
+.char-eye.right { right: 0; }
+@keyframes blink {
+    0%, 95%, 100% { transform: scaleY(1); }
+    97% { transform: scaleY(0.1); }
+}
+/* 嘴 */
+.char-mouth {
+    position: absolute;
+    top: 17px; left: 50%;
+    transform: translateX(-50%);
+    width: 5px; height: 3px;
+    border-bottom: 2px solid #c4846c;
+    border-radius: 0 0 50% 50%;
+    z-index: 4;
+}
+
+/* 围巾 */
+.char-scarf {
+    position: absolute;
+    top: 24px; left: 50%;
+    transform: translateX(-50%);
+    width: 20px; height: 6px;
+    background: #0085A1;
+    border-radius: 2px;
+    z-index: 2;
+}
+.char-scarf::after {
+    content: '';
+    position: absolute;
+    top: 4px; right: 2px;
+    width: 6px; height: 10px;
+    background: #0085A1;
+    border-radius: 0 0 3px 3px;
+    transform-origin: top center;
+}
+
+/* 身体 */
+.char-body {
+    position: absolute;
+    top: 28px; left: 50%;
+    transform: translateX(-50%);
+    width: 18px; height: 20px;
+    background: #5b8c5a;
+    border-radius: 4px 4px 2px 2px;
+    z-index: 1;
+}
+
+/* 手臂 */
+.char-arm {
+    position: absolute;
+    top: 30px;
+    width: 6px; height: 18px;
+    background: #ffe0bd;
+    border-radius: 3px;
+    z-index: 0;
+    transform-origin: top center;
+}
+.char-arm.left { left: 6px; }
+.char-arm.right { right: 6px; }
+
+/* 腿 */
+.char-leg {
+    position: absolute;
+    bottom: 0;
+    width: 7px; height: 20px;
+    background: #4a6741;
+    border-radius: 0 0 3px 3px;
+    transform-origin: top center;
+    z-index: 1;
+}
+.char-leg.left { left: 10px; }
+.char-leg.right { right: 10px; }
+
+/* 鞋子 */
+.char-shoe {
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 9px; height: 5px;
+    background: #3a2520;
+    border-radius: 2px 4px 3px 3px;
+}
+
+/* 走路动画 */
+.character.walking .char-leg.left { animation: walkL 0.5s ease-in-out infinite; }
+.character.walking .char-leg.right { animation: walkR 0.5s ease-in-out infinite; }
+.character.walking .char-arm.left { animation: swingR 0.5s ease-in-out infinite; }
+.character.walking .char-arm.right { animation: swingL 0.5s ease-in-out infinite; }
+.character.walking .char-scarf::after { animation: scarfBlow 0.5s ease-in-out infinite; }
+.character.walking { animation: bob 0.25s ease-in-out infinite; }
+
+@keyframes walkL {
+    0%, 100% { transform: rotate(20deg); }
+    50% { transform: rotate(-20deg); }
+}
+@keyframes walkR {
+    0%, 100% { transform: rotate(-20deg); }
+    50% { transform: rotate(20deg); }
+}
+@keyframes swingL {
+    0%, 100% { transform: rotate(15deg); }
+    50% { transform: rotate(-15deg); }
+}
+@keyframes swingR {
+    0%, 100% { transform: rotate(-15deg); }
+    50% { transform: rotate(15deg); }
+}
+@keyframes bob {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-2px); }
+}
+@keyframes scarfBlow {
+    0%, 100% { transform: rotate(5deg); }
+    50% { transform: rotate(-10deg); }
+}
+
+/* 朝向翻转 */
+.character.face-left .char-head,
+.character.face-left .char-hair,
+.character.face-left .char-eyes,
+.character.face-left .char-body,
+.character.face-left .char-scarf {
+    transform: translateX(-50%) scaleX(-1);
+}
+
+/* ===== 回到主页提示 ===== */
+.home-hint {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%) translateX(20px);
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    z-index: 20;
+    text-align: center;
+    pointer-events: none;
+}
+.home-hint.visible {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+    pointer-events: auto;
+}
+.home-hint-arrow {
+    font-size: 2rem;
+    color: #0085A1;
+    animation: pointRight 1.5s ease-in-out infinite;
+    display: block;
+    margin-bottom: 8px;
+}
+@keyframes pointRight {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(8px); }
+}
+.home-hint a {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #0085A1;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 15px rgba(0,133,161,0.3);
+    transition: all 0.3s ease;
+}
+.home-hint a:hover {
+    background: #006f87;
+    box-shadow: 0 6px 25px rgba(0,133,161,0.4);
+    transform: scale(1.05);
+}
+
+/* ===== 描述文字 ===== */
+.desc-text {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: color 0.8s ease;
+    opacity: 0.6;
+    letter-spacing: 0.1em;
+}
+
+/* ===== 覆盖导航样式 ===== */
+.navbar-custom {
+    background: transparent !important;
+    box-shadow: none !important;
+    transition: opacity 0.5s ease;
+}
+
+/* ===== 自定义光标 ===== */
+.cursor-glow {
+    position: fixed;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 100;
+    transform: translate(-50%, -50%);
+    transition: background 0.5s ease, box-shadow 0.5s ease;
+}
+</style>
+
+<div class="error-page" id="errorPage">
+    <!-- 天空 -->
+    <div class="sky" id="sky"></div>
+
+    <!-- 星星 -->
+    <div class="stars-layer" id="starsLayer"></div>
+
+    <!-- 月亮 -->
+    <div class="celestial moon" id="moon">
+        <div class="moon-crater" style="width:12px;height:12px;top:8px;left:12px;"></div>
+        <div class="moon-crater" style="width:7px;height:7px;top:28px;left:22px;"></div>
+        <div class="moon-crater" style="width:5px;height:5px;top:18px;left:36px;"></div>
+    </div>
+
+    <!-- 太阳 -->
+    <div class="celestial sun" id="sun"></div>
+
+    <!-- 云 -->
+    <div class="clouds" id="clouds">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+    </div>
+
+    <!-- 404文字 -->
+    <div class="text-404" id="text404">404</div>
+
+    <!-- 描述 -->
+    <div class="desc-text" id="descText">你来到了没有知识的荒原 —— 向右走，去寻找光明吧</div>
+
+    <!-- 地面 -->
+    <div class="ground">
+        <div class="ground-fill" id="groundFill"></div>
+        <div class="ground-line" id="groundLine"></div>
+        <div class="grass-container" id="grassContainer"></div>
+    </div>
+
+    <!-- 小人 -->
+    <div class="character" id="character">
+        <div class="char-hair"></div>
+        <div class="char-head">
+            <div class="char-eyes">
+                <div class="char-eye left"></div>
+                <div class="char-eye right"></div>
+            </div>
+            <div class="char-mouth"></div>
+        </div>
+        <div class="char-scarf"></div>
+        <div class="char-body"></div>
+        <div class="char-arm left"></div>
+        <div class="char-arm right"></div>
+        <div class="char-leg left"><div class="char-shoe"></div></div>
+        <div class="char-leg right"><div class="char-shoe"></div></div>
+    </div>
+
+    <!-- 回到主页提示 -->
+    <div class="home-hint" id="homeHint">
+        <span class="home-hint-arrow">&#10132;</span>
+        <a href="{{ site.baseurl }}/">回到主页</a>
+    </div>
+</div>
+
+<!-- 光标 -->
+<div class="cursor-glow" id="cursorGlow"></div>
 
 <script>
-	document.body.classList.add('page-fullscreen');
+(function() {
+    document.body.classList.add('page-fullscreen');
+
+    var page = document.getElementById('errorPage');
+    var sky = document.getElementById('sky');
+    var starsLayer = document.getElementById('starsLayer');
+    var moon = document.getElementById('moon');
+    var sun = document.getElementById('sun');
+    var clouds = document.getElementById('clouds');
+    var text404 = document.getElementById('text404');
+    var descText = document.getElementById('descText');
+    var groundFill = document.getElementById('groundFill');
+    var groundLine = document.getElementById('groundLine');
+    var grassContainer = document.getElementById('grassContainer');
+    var character = document.getElementById('character');
+    var homeHint = document.getElementById('homeHint');
+    var cursorGlow = document.getElementById('cursorGlow');
+
+    /* --- 生成星星 --- */
+    for (var i = 0; i < 100; i++) {
+        var s = document.createElement('div');
+        s.className = 'star';
+        s.style.left = Math.random() * 100 + '%';
+        s.style.top = Math.random() * 100 + '%';
+        var size = 1 + Math.random() * 2;
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.opacity = (0.3 + Math.random() * 0.7).toString();
+        s.style.animation = 'twinkle ' + (2 + Math.random() * 3) + 's ease-in-out ' + (Math.random() * 3) + 's infinite';
+        starsLayer.appendChild(s);
+    }
+
+    /* --- 生成小草 --- */
+    for (var g = 0; g < 60; g++) {
+        var grass = document.createElement('div');
+        grass.className = 'grass';
+        grass.style.left = (Math.random() * 100) + '%';
+        grass.style.height = (4 + Math.random() * 8) + 'px';
+        grass.style.transform = 'rotate(' + (-10 + Math.random() * 20) + 'deg)';
+        grassContainer.appendChild(grass);
+    }
+
+    /* --- 颜色插值 --- */
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function lerpColor(c1, c2, t) {
+        return [
+            Math.round(lerp(c1[0], c2[0], t)),
+            Math.round(lerp(c1[1], c2[1], t)),
+            Math.round(lerp(c1[2], c2[2], t))
+        ];
+    }
+
+    function rgb(c) { return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')'; }
+
+    /* --- 场景颜色配置 --- */
+    var nightSkyTop = [10, 12, 30];
+    var nightSkyBot = [20, 25, 50];
+    var dawnSkyTop = [40, 60, 100];
+    var dawnSkyBot = [180, 120, 100];
+    var daySkyTop = [100, 180, 240];
+    var daySkyBot = [180, 220, 255];
+
+    var nightGround = [15, 20, 35];
+    var dawnGround = [60, 50, 45];
+    var dayGround = [100, 160, 80];
+
+    var nightText = [50, 60, 100];
+    var dayText = [160, 200, 240];
+
+    /* --- 小人位置 --- */
+    var charX = window.innerWidth * 0.15;
+    var targetX = charX;
+    var currentFacing = 'right';
+    var isWalking = false;
+    var walkTimeout;
+    var progress = 0.15;
+
+    /* --- requestAnimationFrame 平滑 --- */
+    var mouseX = window.innerWidth * 0.15;
+    var mouseY = window.innerHeight * 0.5;
+
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+    function multiLerp(colors, t) {
+        if (t <= 0) return colors[0];
+        if (t >= 1) return colors[colors.length - 1];
+        var seg = (colors.length - 1) * t;
+        var idx = Math.floor(seg);
+        var frac = seg - idx;
+        if (idx >= colors.length - 1) return colors[colors.length - 1];
+        return lerpColor(colors[idx], colors[idx + 1], frac);
+    }
+
+    function updateScene() {
+        var w = window.innerWidth;
+
+        /* 小人平滑跟随 */
+        var dx = targetX - charX;
+        charX += dx * 0.06;
+
+        /* 限制范围 */
+        charX = Math.max(30, Math.min(w - 30, charX));
+
+        /* 进度: 0=最左(夜), 1=最右(日) */
+        progress = charX / w;
+        var t = progress;
+
+        /* 走路状态 */
+        if (Math.abs(dx) > 1.5) {
+            if (!isWalking) {
+                character.classList.add('walking');
+                isWalking = true;
+            }
+            if (dx > 0 && currentFacing !== 'right') {
+                character.classList.remove('face-left');
+                currentFacing = 'right';
+            } else if (dx < 0 && currentFacing !== 'left') {
+                character.classList.add('face-left');
+                currentFacing = 'left';
+            }
+            clearTimeout(walkTimeout);
+            walkTimeout = setTimeout(function() {
+                character.classList.remove('walking');
+                isWalking = false;
+            }, 200);
+        }
+
+        /* 天空渐变 */
+        var skyTop = multiLerp([nightSkyTop, dawnSkyTop, daySkyTop], t);
+        var skyBot = multiLerp([nightSkyBot, dawnSkyBot, daySkyBot], t);
+        sky.style.background = 'linear-gradient(to bottom, ' + rgb(skyTop) + ', ' + rgb(skyBot) + ')';
+
+        /* 星星透明度 */
+        var starOp = t < 0.3 ? 1 : t < 0.5 ? 1 - (t - 0.3) / 0.2 : 0;
+        starsLayer.style.opacity = starOp;
+
+        /* 月亮和太阳 */
+        moon.style.opacity = t < 0.2 ? 1 : t < 0.45 ? 1 - (t - 0.2) / 0.25 : 0;
+        sun.style.opacity = t > 0.6 ? 1 : t > 0.4 ? (t - 0.4) / 0.2 : 0;
+
+        /* 云 */
+        var cloudOp = t > 0.5 ? Math.min(1, (t - 0.5) / 0.3) * 0.7 : 0;
+        var cloudEls = clouds.querySelectorAll('.cloud');
+        for (var ci = 0; ci < cloudEls.length; ci++) {
+            cloudEls[ci].style.opacity = cloudOp;
+        }
+
+        /* 地面 */
+        var gc = multiLerp([nightGround, dawnGround, dayGround], t);
+        groundFill.style.background = 'linear-gradient(to bottom, ' + rgb(gc) + ', ' + rgb(lerpColor(gc, [0,0,0], 0.3)) + ')';
+
+        /* 地平线 */
+        var lineOp = lerp(0.1, 0.3, t);
+        groundLine.style.background = t > 0.5
+            ? 'rgba(0,0,0,' + lineOp + ')'
+            : 'rgba(255,255,255,' + lineOp + ')';
+
+        /* 小草颜色 */
+        var grassColor = multiLerp([[30,40,55], [80,70,50], [60,130,50]], t);
+        grassContainer.style.color = rgb(grassColor);
+
+        /* 404 文字 */
+        var tc = multiLerp([nightText, [200,160,120], dayText], t);
+        text404.style.color = 'rgba(' + tc[0] + ',' + tc[1] + ',' + tc[2] + ', 0.12)';
+
+        /* 描述文字 */
+        descText.style.color = t > 0.5
+            ? 'rgba(80,80,80,0.6)'
+            : 'rgba(200,200,200,0.6)';
+
+        /* 小人位置 */
+        character.style.left = charX + 'px';
+
+        /* 主页提示 */
+        if (t > 0.78) {
+            homeHint.classList.add('visible');
+        } else {
+            homeHint.classList.remove('visible');
+        }
+
+        /* 光标光晕 */
+        if (t > 0.5) {
+            cursorGlow.style.background = 'radial-gradient(circle, rgba(0,133,161,0.3), transparent)';
+            cursorGlow.style.boxShadow = '0 0 15px rgba(0,133,161,0.2)';
+        } else {
+            cursorGlow.style.background = 'radial-gradient(circle, rgba(255,255,200,0.3), transparent)';
+            cursorGlow.style.boxShadow = '0 0 15px rgba(255,255,200,0.2)';
+        }
+
+        requestAnimationFrame(updateScene);
+    }
+
+    /* --- 鼠标事件 --- */
+    page.addEventListener('mousemove', function(e) {
+        targetX = e.clientX;
+        mouseY = e.clientY;
+        cursorGlow.style.left = e.clientX + 'px';
+        cursorGlow.style.top = e.clientY + 'px';
+    });
+
+    /* 触摸支持 */
+    page.addEventListener('touchmove', function(e) {
+        var touch = e.touches[0];
+        targetX = touch.clientX;
+        cursorGlow.style.display = 'none';
+        e.preventDefault();
+    }, { passive: false });
+
+    page.addEventListener('mouseleave', function() {
+        cursorGlow.style.opacity = '0';
+    });
+    page.addEventListener('mouseenter', function() {
+        cursorGlow.style.opacity = '1';
+    });
+
+    /* 启动动画循环 */
+    requestAnimationFrame(updateScene);
+})();
 </script>
