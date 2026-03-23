@@ -242,3 +242,49 @@ layout: default
     }
 </style>
 {% endif %}
+
+<!-- Code block language label + copy button -->
+<script>
+(function() {
+    document.querySelectorAll('div.highlight').forEach(function(block) {
+        if (block.parentElement.classList.contains('highlight-wrap')) return;
+
+        var codeEl = block.querySelector('code');
+        var lang = '';
+        if (codeEl && codeEl.className) {
+            var match = codeEl.className.match(/language-(\w+)/);
+            if (match) lang = match[1];
+        }
+        if (!lang) {
+            var hlMatch = block.className.match(/highlight-(\w+)/);
+            if (hlMatch) lang = hlMatch[1];
+        }
+
+        var wrapper = document.createElement('div');
+        wrapper.className = 'highlight-wrap';
+
+        var header = document.createElement('div');
+        header.className = 'code-header';
+        header.innerHTML =
+            '<span class="code-lang">' + (lang || 'code') + '</span>' +
+            '<button class="copy-btn" title="复制代码">复制</button>';
+
+        block.parentNode.insertBefore(wrapper, block);
+        wrapper.appendChild(header);
+        wrapper.appendChild(block);
+
+        header.querySelector('.copy-btn').addEventListener('click', function() {
+            var btn = this;
+            var text = block.querySelector('pre').textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                btn.textContent = '已复制';
+                btn.classList.add('copied');
+                setTimeout(function() {
+                    btn.textContent = '复制';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        });
+    });
+})();
+</script>

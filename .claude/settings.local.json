@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs ls:*)",
+      "Bash(head -100 /d/jdfcc.github.io/_posts/*.md)",
+      "Bash(wc -l /d/jdfcc.github.io/less/*.less)",
+      "Bash(npm install:*)",
+      "Bash(npx grunt:*)",
+      "Bash(node -e \"var p=require\\(''./package.json''\\); console.log\\(p.name\\)\")",
+      "Bash(npx lessc:*)",
+      "Bash(bundle exec:*)"
+    ]
+  }
+}
