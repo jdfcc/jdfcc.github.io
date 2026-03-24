@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+#
+# Pre-commit hook: auto-complete Jekyll post filename and front matter.
+#   - Adds YYYY-MM-DD- date prefix if missing
+#   - Adds front matter block if missing
+#   - Adds date: field if front matter exists but date is missing
+
+set -euo pipefail
+
+TODAY=$(date +%Y-%m-%d)
+
+# Get staged .md files under _posts/
+staged_posts=$(git diff --cached --name-only --diff-filter=ACM | grep '^_posts/.*\.md$' || true)
+
+if [ -z "$staged_posts" ]; then
+    exit 0
+fi
+
+while IFS= read -r filepath; do
+    filename=$(basename "$filepath")
+    dir=$(dirname "$filepath")
+
+    # 1. Check date prefix
+    if [[ "$filename" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}- ]]; then
+        # Already has date prefix, extract date from filename
+        file_date="${filename:0:10}"
+        title="${filename:11}"
+        title="${title%.md}"
+    else
+        # No date prefix — rename with today's date
+        file_date="$TODAY"
+        new_filename="${TODAY}-${filename}"
+        new_filepath="${dir}/${new_filename}"
+        title="${filename%.md}"
+
+        git mv "$filepath" "$new_filepath"
+        filepath="$new_filepath"
+    fi
+
+    # 2. Check front matter
+    first_line=$(head -n 1 "$filepath")
+
+    if [ "$first_line" != "---" ]; then
+        # No front matter — prepend it
+        front_matter="---
+layout:     post
+title:      ${title}
+date:       ${file_date}
+author:     jdfcc
+catalog:    true
+tags:
+    - Blog
+---
+
+"
+        tmp_file=$(mktemp)
+        printf '%s' "$front_matter" > "$tmp_file"
+        cat "$filepath" >> "$tmp_file"
+        mv "$tmp_file" "$filepath"
+    else
+        # Has front matter — check if date: field exists
+        # Extract the front matter block (between first and second ---)
+        has_date=$(awk '/^---$/{n++; next} n==1 && /^date:/{found=1} n==2{exit} END{print found+0}' "$filepath")
+        if [ "$has_date" -eq 0 ]; then
+            # Insert date: after the first ---
+            tmp_file=$(mktemp)
+            awk -v d="date:       ${file_date}" '
+                /^---$/ && n==0 { print; print d; n=1; next }
+                { print }
+            ' "$filepath" > "$tmp_file"
+            mv "$tmp_file" "$filepath"
+        fi
+    fi
+
+    # 3. Re-add to staging area
+    git add "$filepath"
+
+done <<< "$staged_posts"
