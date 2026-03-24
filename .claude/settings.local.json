@@ -8,7 +8,10 @@
       "Bash(npx grunt:*)",
       "Bash(node -e \"var p=require\\(''./package.json''\\); console.log\\(p.name\\)\")",
       "Bash(npx lessc:*)",
-      "Bash(bundle exec:*)"
+      "Bash(bundle exec:*)",
+      "Bash(git config:*)",
+      "Bash(chmod:*)",
+      "Bash(git add:*)"
     ]
   }
 }

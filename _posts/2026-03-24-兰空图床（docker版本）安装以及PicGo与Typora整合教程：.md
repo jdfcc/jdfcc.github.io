@@ -38,7 +38,7 @@ docker run -d \
 
 ## 4.进入图床:
 
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'admin' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED Jdfcc 'admin' WITH GRANT OPTION;
 
 使用 ip+8080方式进入图床。如 http://120.55.80.133:8089。至此图床安装完成。
 

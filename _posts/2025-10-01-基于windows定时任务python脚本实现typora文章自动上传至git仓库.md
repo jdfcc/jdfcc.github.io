@@ -3,7 +3,7 @@ layout:     post
 title:      基于windows定时任务python脚本实现typora文章自动上传至git仓库
 subtitle:   
 date:       2025-03-27
-author:     BY
+author:     Jdfcc
 header-img: ./assets/655492ee24625-1725587170922-3.png
 catalog: true
 tags:
