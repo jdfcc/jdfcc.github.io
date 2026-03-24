@@ -1189,3 +1189,244 @@ img::-moz-selection {
 .page-fullscreen footer .copyright a:hover {
   color: #ddd;
 }
+
+/* ======== Gitalk 自定义样式 ======== */
+#gitalk-container {
+  margin-top: 30px;
+}
+.gt-container {
+  font-family: inherit !important;
+}
+/* 标题区域 */
+.gt-container .gt-meta {
+  border-bottom: 1px solid #f0f0f0 !important;
+  padding-bottom: 12px !important;
+}
+.gt-container .gt-counts {
+  color: #808080 !important;
+  font-size: 14px !important;
+}
+.gt-container .gt-counts a {
+  color: #0085a1 !important;
+}
+/* 头像 */
+.gt-container .gt-avatar img {
+  border-radius: 50% !important;
+}
+.gt-container .gt-header-avatar {
+  margin-right: 12px !important;
+}
+/* 评论输入框 */
+.gt-container .gt-header-comment {
+  border: 1px solid #e8e8e8 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  transition: border-color 0.3s ease !important;
+  box-shadow: none !important;
+}
+.gt-container .gt-header-comment:hover {
+  border-color: #0085a1 !important;
+}
+.gt-container .gt-header-textarea {
+  background-color: #fafafa !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 12px 16px !important;
+  font-size: 14px !important;
+  color: #404040 !important;
+  line-height: 1.7 !important;
+  transition: background-color 0.3s ease !important;
+}
+.gt-container .gt-header-textarea:focus {
+  background-color: #fff !important;
+}
+.gt-container .gt-header-textarea::placeholder {
+  color: #bfbfbf !important;
+}
+/* 预览和操作栏 */
+.gt-container .gt-header-controls {
+  border-top: 1px solid #f0f0f0 !important;
+  background: #fff !important;
+  padding: 8px 12px !important;
+}
+.gt-container .gt-header-controls-tip {
+  color: #bfbfbf !important;
+  font-size: 12px !important;
+}
+/* 预览按钮 */
+.gt-container .gt-btn-preview {
+  background: none !important;
+  border: 1px solid #e8e8e8 !important;
+  border-radius: 4px !important;
+  color: #808080 !important;
+  font-size: 12px !important;
+  padding: 4px 12px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+}
+.gt-container .gt-btn-preview:hover {
+  border-color: #0085a1 !important;
+  color: #0085a1 !important;
+}
+/* 提交按钮 */
+.gt-container .gt-btn-public {
+  background-color: #0085a1 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  padding: 6px 20px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: none !important;
+}
+.gt-container .gt-btn-public:hover {
+  background-color: #006b82 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 133, 161, 0.3) !important;
+}
+/* 登录按钮 */
+.gt-container .gt-btn-login {
+  background-color: #0085a1 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 8px 24px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: none !important;
+}
+.gt-container .gt-btn-login:hover {
+  background-color: #006b82 !important;
+  box-shadow: 0 2px 8px rgba(0, 133, 161, 0.3) !important;
+}
+/* 评论列表 */
+.gt-container .gt-comment-content {
+  background: #fff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+  border: none !important;
+  padding: 16px 20px !important;
+  transition: box-shadow 0.3s ease !important;
+}
+.gt-container .gt-comment-content:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+.gt-container .gt-comment-body {
+  color: #404040 !important;
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+}
+.gt-container .gt-comment-body p {
+  margin: 8px 0 !important;
+}
+/* 评论用户名 */
+.gt-container .gt-comment-username {
+  color: #0085a1 !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+.gt-container .gt-comment-username:hover {
+  color: #006b82 !important;
+}
+/* 评论日期 */
+.gt-container .gt-comment-date {
+  color: #bfbfbf !important;
+  font-size: 12px !important;
+}
+/* 评论操作按钮(点赞/回复) */
+.gt-container .gt-comment-reply,
+.gt-container .gt-comment-like {
+  color: #bfbfbf !important;
+  transition: color 0.2s ease !important;
+}
+.gt-container .gt-comment-reply:hover,
+.gt-container .gt-comment-like:hover {
+  color: #0085a1 !important;
+}
+/* 评论管理员标签 */
+.gt-container .gt-comment-admin .gt-comment-content {
+  border-left: 3px solid #0085a1 !important;
+}
+/* 加载动画 */
+.gt-container .gt-spinner::before {
+  border-color: #0085a1 !important;
+  border-top-color: transparent !important;
+}
+/* 无评论提示 */
+.gt-container .gt-no-init {
+  color: #bfbfbf !important;
+  font-size: 14px !important;
+}
+/* 错误提示 */
+.gt-container .gt-error {
+  color: #e74c3c !important;
+  font-size: 14px !important;
+}
+/* Gitalk 底部链接 */
+.gt-container .gt-copyright {
+  border-top: 1px solid #f0f0f0 !important;
+  padding-top: 12px !important;
+  margin-top: 20px !important;
+}
+.gt-container .gt-copyright a {
+  color: #bfbfbf !important;
+  font-size: 12px !important;
+}
+.gt-container .gt-copyright a:hover {
+  color: #0085a1 !important;
+}
+/* Gitalk Popup弹出层 */
+.gt-container .gt-popup {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
+}
+/* 预览区域 */
+.gt-container .gt-header-preview {
+  background: #fafafa !important;
+  border-top: 1px solid #f0f0f0 !important;
+  padding: 16px !important;
+  color: #404040 !important;
+}
+/* 分页按钮 */
+.gt-container .gt-btn-getmore {
+  border-radius: 4px !important;
+  border: 1px solid #e8e8e8 !important;
+  color: #808080 !important;
+  background: #fff !important;
+  transition: all 0.2s ease !important;
+}
+.gt-container .gt-btn-getmore:hover {
+  border-color: #0085a1 !important;
+  color: #0085a1 !important;
+}
+/* 评论内容中的代码 */
+.gt-container .gt-comment-body code {
+  background: #f0f7f9 !important;
+  color: #0085a1 !important;
+  padding: 2px 6px !important;
+  border-radius: 3px !important;
+  font-size: 0.9em !important;
+}
+.gt-container .gt-comment-body pre {
+  background: #21252b !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+}
+.gt-container .gt-comment-body pre code {
+  background: none !important;
+  color: #abb2bf !important;
+  padding: 0 !important;
+}
+/* 评论链接 */
+.gt-container .gt-comment-body a {
+  color: #337ab7 !important;
+  text-decoration: none !important;
+}
+.gt-container .gt-comment-body a:hover {
+  color: #0085a1 !important;
+}
+/* ======== Gitalk 样式结束 ======== */
