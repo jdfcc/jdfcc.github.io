@@ -1,0 +1,27 @@
+---
+import PostLayout from '@/layouts/PostLayout.astro';
+import { findAdjacentPosts, getAllPosts, getPermalinkParam } from '@/lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+
+  return posts.map((post) => ({
+    params: {
+      permalink: getPermalinkParam(post),
+    },
+    props: {
+      post,
+      posts,
+    },
+  }));
+}
+
+const { post, posts } = Astro.props;
+const { Content, headings } = await post.render();
+const { previous, next } = findAdjacentPosts(posts, post);
+const toc = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+---
+
+<PostLayout post={post} previous={previous} next={next} toc={toc}>
+  <Content />
+</PostLayout>

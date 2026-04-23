@@ -11,7 +11,13 @@
       "Bash(bundle exec:*)",
       "Bash(git config:*)",
       "Bash(chmod:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "WebFetch(domain:mmguo.dev)",
+      "Bash(python:*)",
+      "Bash(cp:*)",
+      "Bash(node:*)",
+      "Bash(npm run:*)",
+      "Bash(git:*)"
     ]
   }
 }

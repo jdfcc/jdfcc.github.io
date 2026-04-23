@@ -1,0 +1,164 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { toSectionId, type PostEntry } from '@/lib/posts';
+
+interface TocHeading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  post: PostEntry;
+  previous?: PostEntry;
+  next?: PostEntry;
+  toc?: TocHeading[];
+}
+
+const { post, previous, next, toc = [] } = Astro.props;
+const description = post.data.description ?? '文章详情';
+const pageTitle = `${post.data.title} · Jdfcc`;
+---
+
+<BaseLayout title={pageTitle} description={description}>
+  <div class="post-layout">
+    <aside class="post-sidebar" aria-label="文章目录">
+      {toc.length > 0 && (
+        <div class="post-sidebar-sticky">
+          <p class="eyebrow">contents</p>
+          <nav class="post-toc">
+            <ul>
+              {toc.map((heading) => (
+                <li class:list={{ 'is-nested': heading.depth === 3 }}>
+                  <a href={`#${heading.slug}`} data-toc-link={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      )}
+    </aside>
+
+    <article class="post-page">
+      <header class="post-header">
+        <p class="eyebrow">WRITING</p>
+        <p class="post-date">{post.data.created.toLocaleDateString('zh-CN')}</p>
+        <h1>{post.data.title}</h1>
+        {post.data.description && <p class="post-description">{post.data.description}</p>}
+        <div class="post-tags" aria-label="文章标签">
+          {post.data.tags.length > 0 ? (
+            post.data.tags.map((tag) => (
+              <a href={`/#${toSectionId(tag)}`}>{tag}</a>
+            ))
+          ) : (
+            <a href={`/#${toSectionId('杂谈')}`}>杂谈</a>
+          )}
+        </div>
+      </header>
+
+      <div class="post-content prose">
+        <slot />
+      </div>
+
+      {(previous || next) && (
+        <nav class="post-pagination" aria-label="文章翻页">
+          <div>
+            {previous && (
+              <a href={previous.data.permalink}>
+                <span>较新</span>
+                <strong>{previous.data.title}</strong>
+              </a>
+            )}
+          </div>
+          <div>
+            {next && (
+              <a href={next.data.permalink}>
+                <span>较旧</span>
+                <strong>{next.data.title}</strong>
+              </a>
+            )}
+          </div>
+        </nav>
+      )}
+    </article>
+  </div>
+
+  <script is:inline>
+    const tocHeadings = Array.from(document.querySelectorAll('.post-content h2[id], .post-content h3[id]'));
+    const tocLinks = new Map(
+      Array.from(document.querySelectorAll('[data-toc-link]')).map((link) => [link.getAttribute('data-toc-link'), link]),
+    );
+
+    if (tocHeadings.length > 0 && tocLinks.size > 0) {
+      let tocLockedId = null;
+      let tocUnlockTimer = null;
+      let isTocScrolling = false;
+
+      const setActiveTocLink = (id) => {
+        tocLinks.forEach((link, key) => {
+          link.classList.toggle('is-active', key === `#${id}`);
+        });
+      };
+
+      const lockTocActiveState = (id) => {
+        tocLockedId = id;
+        window.clearTimeout(tocUnlockTimer);
+        tocUnlockTimer = window.setTimeout(() => {
+          tocLockedId = null;
+        }, 420);
+      };
+
+      const scrollToHeading = (id) => {
+        const target = document.getElementById(id);
+        if (!target || isTocScrolling) return;
+        isTocScrolling = true;
+        setActiveTocLink(id);
+        lockTocActiveState(id);
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', `#${id}`);
+        window.setTimeout(() => {
+          isTocScrolling = false;
+        }, 460);
+      };
+
+      tocLinks.forEach((link, key) => {
+        const id = key?.slice(1);
+        if (!id) return;
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          scrollToHeading(id);
+        });
+      });
+
+      const tocObserver = new IntersectionObserver(
+        (entries) => {
+          if (tocLockedId) {
+            setActiveTocLink(tocLockedId);
+            return;
+          }
+
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
+
+          if (visible?.target?.id) {
+            setActiveTocLink(visible.target.id);
+          }
+        },
+        {
+          rootMargin: '-18% 0px -60% 0px',
+          threshold: [0.15, 0.35, 0.6],
+        },
+      );
+
+      tocHeadings.forEach((heading) => tocObserver.observe(heading));
+
+      const initialTocId = window.location.hash?.slice(1);
+      if (initialTocId && document.getElementById(initialTocId)) {
+        setActiveTocLink(initialTocId);
+      } else {
+        setActiveTocLink(tocHeadings[0].id);
+      }
+    }
+  </script>
+</BaseLayout>

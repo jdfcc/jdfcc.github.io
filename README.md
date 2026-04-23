@@ -1,220 +1,159 @@
-# 前言
-本项目forked自[https://github.com/qiubaiying/qiubaiying.github.io](https://github.com/qiubaiying/qiubaiying.github.io)，关于如何初始化项目此处不再赘述，请参考原项目README。这里主要说说针对原项目的修改
+# jdfcc.github.io
 
-# 修改
+这是我的个人博客仓库，最早基于 [qiubaiying/qiubaiying.github.io](https://github.com/qiubaiying/qiubaiying.github.io) 搭建，当前已经迁移为 **Astro 静态站点**。
 
-## 一、添加博客时不用再手动为博客打上日期标签
+站点地址：<https://jdfcc.github.io>
 
+## 当前技术栈
 
-在 **Jekyll 博客** 中，要求 **文章文件名必须包含日期**，博客文章（post）默认放在 `_posts` 目录下。
-每篇文章都必须遵守文件命名规则：
+- Astro 5
+- TypeScript
+- Astro Content Collections
+- GitHub Pages
+- GitHub Actions
 
-```
-YYYY-MM-DD-title.md
-```
+## 项目结构
 
-比如：
-
-```
-2025-10-10-my-first-post.md
-```
-
-这将导致如果从其他源导入文章时，需要手动为导入的文章添加日期标签。如果文章数量过多，那么这个过程就会非常麻烦。
-为了解决这个问题，此处通过GitHub工作流来实现在自动为`_post`目录下的markdown文件添加日期标签。具体逻辑为：
-1. 创建一个工作流任务，此工作流的作用为将`_post`目录下的文件批量重命名.内容如下:
-	```yml
-
-	      - name: Add default date to posts
-        run: |
-          for file in _posts/*.md; do
-            if ! grep -q "^date:" "$file"; then
-              # 在 Front Matter 添加默认 date
-              sed -i "0,/^---$/s/^---$/---\ndate: 2025-01-01/" "$file"
-            fi
-            # 如果文件名没有日期，给它加上
-            if [[ ! $(basename "$file") =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}- ]]; then
-              mv "$file" "$(dirname "$file")/2025-01-01-$(basename "$file")"
-            fi
-          done
-	```
-
-这样在添加博客时，只需要在`_post`目录下添加markdown文件，将文件提交到远程仓库触发trigger时即可自动添加日期标签。
-
-## 二、博客引用图片地址兼容./ 写法
-
-
-本人在 Typora 中写 Markdown 时使用：
-
-```markdown
-![image](assets/xxx.png)
+```text
+.
+├─ public/                 # 静态资源，构建时原样输出
+│  ├─ assets/              # 文章引用的图片、音频等资源
+│  └─ img/                 # 站点通用图片
+├─ src/
+│  ├─ components/          # 页面组件
+│  ├─ content/
+│  │  ├─ config.ts         # 文章 schema
+│  │  └─ posts/            # Astro 实际读取的文章内容
+│  ├─ layouts/             # 页面布局
+│  ├─ lib/                 # 内容处理工具
+│  ├─ pages/               # 路由页面
+│  └─ styles/              # 全局样式
+├─ _posts/                 # 旧文章源文件/待迁移文章
+├─ scripts/
+│  └─ migrate-posts.mjs    # 将 _posts 迁移到 src/content/posts
+└─ .github/workflows/      # GitHub Pages 部署工作流
 ```
 
-文件结构是这样的：
+## 本地开发
 
-```
-_posts/
-  2025-03-27-my-post.md
-  assets/
-    xxx.png
-```
-
-这种方式：
-
-* 在 Typora 本地预览 ✅ 没问题；
-* 在纯 Markdown 阅读器中 ✅ 也是标准兼容的；
-* Markdown 本身没错。
-
----
-
-
-但是当运行 Jekyll 或 GitHub Actions 构建时，
-Jekyll 会把每篇文章渲染成 HTML，放在 `_site` 目录下，比如：
-
-```
-_site/
-  2025/03/27/my-post/index.html
-```
-
-但是图片并不会自动被移动，它依然是：
-
-```
-_site/
-  assets/xxx.png
-```
-
-这就造成了路径错位：
-
-* Markdown 中写的是：
-
-  ```
-  assets/xxx.png
-  ```
-* 页面构建后访问路径变成：
-
-  ```
-  https://jdfcc.github.io/2025/03/27/my-post/assets/xxx.png  ❌
-  ```
-* 实际图片位置是：
-
-  ```
-  https://jdfcc.github.io/assets/xxx.png  ✅
-  ```
-
-👉 所以浏览器访问不到图片。
-
-此处通过把错误的相对图片路径改成网站根路径，即将`post.html`中的
-`{content}`替换为
-`{{ content | replace: 'src="assets/', 'src="/assets/' | replace: 'src="./assets/', 'src="/assets/' }}`
-从而让图片无论在哪个文章子目录下都能正确加载。原理如下:
-
-### 1️⃣ Markdown 原文：
-
-```markdown
-![test](assets/img.png)
-```
-
-### 2️⃣ Jekyll 解析 Markdown → HTML
-
-Jekyll（或 kramdown）会把它变成：
-
-```html
-<p><img src="assets/img.png" alt="test"></p>
-```
-
-注意⚠️：
-这里的 `src="assets/img.png"` 是**相对于页面路径**的。
-但实际生成的网页路径其实是这样的：
-
-```
-/2025/03/27/my-post/index.html
-```
-
-所以浏览器会尝试加载：
-
-```
-/2025/03/27/my-post/assets/img.png   ❌ 不存在
-```
-
----
-
-### 3️⃣ 模板层（`_layouts/post.html`）
-
-在模板里，HTML 是通过：
-
-```liquid
-{{ content }}
-```
-
-插入页面的。
-
-此时我们加上过滤器：
-
-```liquid
-{{ content | replace: 'src="assets/', 'src="/assets/' }}
-```
-
-会让 Jekyll 在生成最终 HTML 时执行一个文本替换操作：
-
-把：
-
-```html
-<img src="assets/img.png">
-```
-
-改成：
-
-```html
-<img src="/assets/img.png">
-```
-
----
-
-### 4️⃣ 浏览器渲染结果
-
-最终网页是：
-
-```
-https://jdfcc.github.io/2025/03/27/my-post/
-```
-
-但图片路径 `/assets/img.png` 会被浏览器解释为：
-
-```
-https://jdfcc.github.io/assets/img.png ✅
-```
-
-所以图片终于能显示了 🎉
-
----
-
-## 🧩 本质上的“修复机制”
-
-| 阶段          | 内容                            | 状态            |
-| ----------- | ----------------------------- | ------------- |
-| Markdown 阶段 | `![img](assets/img.png)`      | ✅ Markdown 正常 |
-| HTML 渲染后    | `<img src="assets/img.png">`  | ❌ 路径错误（相对页面）  |
-| 模板过滤器替换     | `<img src="/assets/img.png">` | ✅ 修正为网站根路径    |
-
-✅ 它的作用就像一个“构建时路径纠正器”，
-在最后一刻，把错误的相对路径改成浏览器能找到的绝对路径。
-
----
-
----
-
-## 🧠 延伸理解
-
-这其实是模板层（Liquid）做的“后处理（post-processing）”技巧。
-原理非常简单：在 HTML 输出前，对内容字符串执行替换。
-类似于：
+安装依赖：
 
 ```bash
-sed 's/src="assets\//src="\/assets\//g'
+npm install
 ```
 
-但我们把它内嵌到了模板系统中，Jekyll 每次构建都会自动完成。效果如下:
+启动开发环境：
 
-![image-202510101234](./assets/image-202510101234.png)
+```bash
+npm run dev
+```
 
-![image-20251010-12345](./assets/image-20251010-12345.png)
+常用命令：
 
+```bash
+npm run dev          # 启动本地开发服务器
+npm run build        # 生成静态站点到 dist/
+npm run preview      # 本地预览构建结果
+npm run check        # 执行 Astro 类型检查
+npm run migrate-posts
+```
+
+## 内容组织方式
+
+当前博客文章以 `src/content/posts/` 为构建输入，首页会按 tag 自动分区展示，文章页会生成目录、上下篇导航和固定 permalink。
+
+相关实现位置：
+
+- `src/content/config.ts`
+- `src/lib/posts.ts`
+- `src/pages/index.astro`
+- `src/pages/[...permalink].astro`
+- `src/layouts/PostLayout.astro`
+
+## 从旧 `_posts` 迁移文章
+
+仓库里仍然保留了旧的 `_posts/` 目录，用于兼容历史文章和批量迁移。
+
+执行下面的命令后，脚本会把 `_posts/` 下的 Markdown 转换到 `src/content/posts/`：
+
+```bash
+npm run migrate-posts
+```
+
+迁移脚本位置：`scripts/migrate-posts.mjs`
+
+迁移时会自动处理这些事情：
+
+### 1. 自动补齐文章日期
+
+脚本会优先按下面的顺序推断文章创建时间：
+
+1. Frontmatter 中的 `created`
+2. Frontmatter 中的 `date`
+3. 文件名中的 `YYYY-MM-DD`
+4. Git 首次提交时间
+5. 文件系统时间
+
+这样即使旧文章文件名没有日期，也能尽量推导出稳定的发布时间。
+
+### 2. 自动生成规范化 frontmatter
+
+迁移后会统一生成这些字段：
+
+- `title`
+- `created`
+- `updated`
+- `tags`
+- `slug`
+- `permalink`
+- `description`
+
+其中 `permalink` 默认格式为：
+
+```text
+/YYYY/MM/DD/slug/
+```
+
+### 3. 自动修正静态资源路径
+
+很多旧文章是在 Typora 中编写的，图片经常写成：
+
+```markdown
+![image](assets/example.png)
+![image](./assets/example.png)
+```
+
+这类相对路径在文章详情页下容易解析错位，所以迁移脚本会把它们改写为站点根路径：
+
+```markdown
+![image](/assets/example.png)
+```
+
+同样的规则也会处理 `img/` 目录，以及 HTML 中的 `img`、`audio`、`video`、`source` 等标签资源引用。
+
+相关实现：
+
+- `scripts/migrate-posts.mjs`
+- `src/lib/rewriteAssetPaths.ts`
+
+## 部署
+
+当前仓库使用 GitHub Actions 构建并发布到 GitHub Pages。
+
+工作流文件：`.github/workflows/jekyll-gh-pages.yml`
+
+工作流会执行：
+
+1. `npm ci`
+2. `npm run build`
+3. 上传 `dist/`
+4. 部署到 GitHub Pages
+
+## 说明
+
+这个仓库已经不是原来的 Jekyll 结构，README 中旧版关于 Jekyll 自动改名和模板替换的说明不再适用于当前实现。现在的核心流程是：
+
+- 在 Astro 中维护页面与布局
+- 使用 `src/content/posts/` 作为文章数据源
+- 通过迁移脚本兼容旧 `_posts/` 内容
+- 通过 GitHub Actions 自动部署静态产物

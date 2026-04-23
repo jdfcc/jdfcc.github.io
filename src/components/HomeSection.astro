@@ -1,0 +1,33 @@
+---
+import type { HomeSection } from '@/lib/posts';
+
+interface Props {
+  section: HomeSection;
+  index: number;
+}
+
+const { section, index } = Astro.props;
+const serial = String(index + 1).padStart(2, '0');
+---
+
+<section class="home-section" id={section.id} data-home-section>
+  <div class="section-heading">
+    <span class="section-label">{serial} {section.name}</span>
+    <span class="section-rule" aria-hidden="true"></span>
+  </div>
+  <ul class="post-list">
+    {section.posts.map((post) => (
+      <li class="post-list-item">
+        <a class="post-link" href={post.data.permalink}>
+          <div class="post-link-main">
+            <span class="post-link-title">{post.data.title}</span>
+            {post.data.description && <p class="post-link-description">{post.data.description.slice(0, 88)}</p>}
+          </div>
+          <div class="post-link-meta">
+            <time datetime={post.data.created.toISOString()}>{post.data.created.toLocaleDateString('zh-CN')}</time>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>

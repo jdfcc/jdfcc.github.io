@@ -1,0 +1,123 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HomeSection from '@/components/HomeSection.astro';
+import { getAllPosts, getHomeSections } from '@/lib/posts';
+
+const posts = await getAllPosts();
+const sections = getHomeSections(posts);
+const latestUpdated = posts[0]?.data.created;
+---
+
+<BaseLayout title="Jdfcc" description="按 tag 分区整理的技术博客索引。">
+  <div class="home-layout">
+    <aside class="home-sidebar" aria-label="页面导航">
+      <div class="home-sidebar-sticky">
+         <div class="home-sidebar-block home-sidebar-meta">
+          <p><span>{posts.length}</span> 篇文章</p>
+          {latestUpdated && <p>最近更新 {latestUpdated.toLocaleDateString('zh-CN')}</p>}
+        </div>
+
+        <nav class="home-sidebar-block home-sidebar-nav" aria-label="分区目录">
+          <p class="eyebrow">sections</p>
+          <ul>
+            {sections.map((section, index) => (
+              <li>
+                <a href={`#${section.id}`} data-home-nav-link={`#${section.id}`}>{String(index + 1).padStart(2, '0')} {section.name}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <div class="home-main-column">
+      <section class="home-hero">
+        <p class="eyebrow">index</p>
+        <h1>All Content</h1>
+      </section>
+
+      <div class="home-sections">
+        {sections.map((section, index) => <HomeSection section={section} index={index} />)}
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    const homeSections = Array.from(document.querySelectorAll('[data-home-section]'));
+    const homeLinks = new Map(
+      Array.from(document.querySelectorAll('[data-home-nav-link]')).map((link) => [link.getAttribute('data-home-nav-link'), link]),
+    );
+
+    if (homeSections.length > 0 && homeLinks.size > 0) {
+      let homeLockedId = null;
+      let homeUnlockTimer = null;
+      let isHomeScrolling = false;
+
+      const setActiveHomeSection = (id) => {
+        homeLinks.forEach((link, key) => {
+          link.classList.toggle('is-active', key === `#${id}`);
+        });
+      };
+
+      const lockHomeActiveState = (id) => {
+        homeLockedId = id;
+        window.clearTimeout(homeUnlockTimer);
+        homeUnlockTimer = window.setTimeout(() => {
+          homeLockedId = null;
+        }, 420);
+      };
+
+      const scrollToHomeSection = (id) => {
+        const target = document.getElementById(id);
+        if (!target || isHomeScrolling) return;
+        isHomeScrolling = true;
+        setActiveHomeSection(id);
+        lockHomeActiveState(id);
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', `#${id}`);
+        window.setTimeout(() => {
+          isHomeScrolling = false;
+        }, 460);
+      };
+
+      homeLinks.forEach((link, key) => {
+        const id = key?.slice(1);
+        if (!id) return;
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          scrollToHomeSection(id);
+        });
+      });
+
+      const homeObserver = new IntersectionObserver(
+        (entries) => {
+          if (homeLockedId) {
+            setActiveHomeSection(homeLockedId);
+            return;
+          }
+
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
+
+          if (visible?.target?.id) {
+            setActiveHomeSection(visible.target.id);
+          }
+        },
+        {
+          rootMargin: '-18% 0px -58% 0px',
+          threshold: [0.15, 0.35, 0.6],
+        },
+      );
+
+      homeSections.forEach((section) => homeObserver.observe(section));
+
+      const initialHomeId = window.location.hash?.slice(1);
+      if (initialHomeId && document.getElementById(initialHomeId)) {
+        setActiveHomeSection(initialHomeId);
+      } else {
+        setActiveHomeSection(homeSections[0].id);
+      }
+    }
+  </script>
+</BaseLayout>

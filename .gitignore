@@ -31,5 +31,7 @@ Temporary Items
 /node_modules
 # End of https://www.gitignore.io/api/macos
 
-# debug file
+# build output
 _site
+.astro
+/dist
