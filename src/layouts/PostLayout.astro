@@ -64,7 +64,7 @@ const pageTitle = `${post.data.title} · Jdfcc`;
         <nav class="post-pagination" aria-label="文章翻页">
           <div>
             {previous && (
-              <a href={previous.data.permalink}>
+              <a href={previous.data.permalink.replace(/\/+$/, '')}>
                 <span>较新</span>
                 <strong>{previous.data.title}</strong>
               </a>
@@ -72,7 +72,7 @@ const pageTitle = `${post.data.title} · Jdfcc`;
           </div>
           <div>
             {next && (
-              <a href={next.data.permalink}>
+              <a href={next.data.permalink.replace(/\/+$/, '')}>
                 <span>较旧</span>
                 <strong>{next.data.title}</strong>
               </a>
