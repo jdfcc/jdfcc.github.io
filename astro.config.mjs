@@ -4,10 +4,10 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://jdfcc.github.io',
   output: 'static',
-  trailingSlash: 'ignore',
+  trailingSlash: 'never',
   integrations: [sitemap()],
-    build: {
-    format: 'file', 
+  build: {
+    format: 'file',
   },
   markdown: {
     syntaxHighlight: 'shiki',
