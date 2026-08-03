@@ -21,7 +21,7 @@ const { title = "Jdfcc", description = "随笔" } =
   </head>
   <body>
     <div class="site-shell">
-      <header class="site-header">
+      <header class="site-header" data-site-header>
         <div class="site-identity">
           <a class="site-brand" href="/">jdfcc</a>
           <p class="site-meta">notes, writings, experiments</p>
@@ -30,7 +30,14 @@ const { title = "Jdfcc", description = "随笔" } =
           <a href="/">index</a>
           <a href="/about/">about</a>
         </nav>
+        <button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false" data-nav-toggle>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </header>
+
+      <div class="drawer-scrim" data-drawer-scrim aria-hidden="true"></div>
 
       <main class="site-main">
         <slot />
@@ -52,5 +59,96 @@ const { title = "Jdfcc", description = "随笔" } =
         </div>
       </footer>
     </div>
+
+    <script is:inline>
+      (() => {
+        const header = document.querySelector('[data-site-header]');
+        const toggle = document.querySelector('[data-nav-toggle]');
+        const scrim = document.querySelector('[data-drawer-scrim]');
+        const drawer = document.querySelector('[data-mobile-drawer]');
+        const mobileQuery = window.matchMedia('(max-width: 860px)');
+
+        const openDrawer = () => {
+          if (!drawer) return;
+          document.body.classList.add('drawer-open');
+          toggle?.setAttribute('aria-expanded', 'true');
+          // keep header visible while the menu is open
+          header?.classList.remove('is-hidden');
+        };
+
+        const closeDrawer = () => {
+          document.body.classList.remove('drawer-open');
+          toggle?.setAttribute('aria-expanded', 'false');
+        };
+
+        const toggleDrawer = () => {
+          if (document.body.classList.contains('drawer-open')) {
+            closeDrawer();
+          } else {
+            openDrawer();
+          }
+        };
+
+        if (drawer) {
+          toggle?.addEventListener('click', toggleDrawer);
+          scrim?.addEventListener('click', closeDrawer);
+          // close after tapping a link inside the drawer
+          drawer.addEventListener('click', (event) => {
+            if (event.target.closest('a')) closeDrawer();
+          });
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeDrawer();
+          });
+        } else {
+          // no drawer content on this page: hide the toggle entirely
+          toggle?.setAttribute('hidden', '');
+        }
+
+        // Hide-on-scroll-down / show-on-scroll-up for the floating header.
+        let lastY = window.scrollY;
+        let ticking = false;
+
+        const onScroll = () => {
+          const currentY = window.scrollY;
+          if (!mobileQuery.matches) {
+            header?.classList.remove('is-hidden');
+            lastY = currentY;
+            ticking = false;
+            return;
+          }
+
+          const delta = currentY - lastY;
+          const menuOpen = document.body.classList.contains('drawer-open');
+
+          if (!menuOpen && currentY > 64 && delta > 6) {
+            header?.classList.add('is-hidden');
+          } else if (delta < -6 || currentY <= 64) {
+            header?.classList.remove('is-hidden');
+          }
+
+          lastY = currentY;
+          ticking = false;
+        };
+
+        window.addEventListener(
+          'scroll',
+          () => {
+            if (!ticking) {
+              window.requestAnimationFrame(onScroll);
+              ticking = true;
+            }
+          },
+          { passive: true },
+        );
+
+        // Reset state when leaving mobile width.
+        mobileQuery.addEventListener('change', (event) => {
+          if (!event.matches) {
+            closeDrawer();
+            header?.classList.remove('is-hidden');
+          }
+        });
+      })();
+    </script>
   </body>
 </html>

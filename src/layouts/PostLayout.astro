@@ -22,7 +22,7 @@ const pageTitle = `${post.data.title} · Jdfcc`;
 
 <BaseLayout title={pageTitle} description={description}>
   <div class="post-layout">
-    <aside class="post-sidebar" aria-label="文章目录">
+    <aside class="post-sidebar" aria-label="文章目录" data-mobile-drawer={toc.length > 0 ? '' : undefined}>
       {toc.length > 0 && (
         <div class="post-sidebar-sticky">
           <p class="eyebrow">contents</p>
