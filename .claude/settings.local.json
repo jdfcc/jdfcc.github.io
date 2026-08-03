@@ -23,7 +23,13 @@
       "Bash(curl -s -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://analytics.digitalplat.org/static/analytics.js\" -o /tmp/dpa.js)",
       "Read(//tmp/**)",
       "Bash(curl -s -i -X OPTIONS https://analytics.digitalplat.org/a/collect -H 'Origin: https://jdfcc.dpdns.org' -H 'Access-Control-Request-Method: POST' -H 'Access-Control-Request-Headers: content-type')",
-      "Bash(curl -s -i -X POST https://analytics.digitalplat.org/a/collect -H 'Origin: https://jdfcc.dpdns.org' -H 'Content-Type: application/json' -d '{\"property\":\"test\",\"event\":\"page_view\"}')"
+      "Bash(curl -s -i -X POST https://analytics.digitalplat.org/a/collect -H 'Origin: https://jdfcc.dpdns.org' -H 'Content-Type: application/json' -d '{\"property\":\"test\",\"event\":\"page_view\"}')",
+      "Bash(curl -s -i -X POST https://analytics.digitalplat.org/a/collect -H 'Origin: https://jdfcc.dpdns.org' -H 'Content-Type: application/json' -d '{\"property\":\"dpa_0CSzpZU7XbnWhpDQQZRnuOnpbMh9m0k\",\"event\":\"page_view\",\"url\":\"https://example.com/docs\"}')",
+      "Bash(curl -s -X POST \"https://analytics.digitalplat.org/a/collect\" -H \"Content-Type: application/json\" -d '{\"property\":\"dpa_0CSzpZU7XbnWhpDQQZRnuOnpbMh9m0k\",\"event\":\"page_view\",\"url\":\"https://example.com/docs\"}')",
+      "Bash(curl -s -I -A \"Mozilla/5.0\" \"https://analytics.digitalplat.org/static/analytics.js\")",
+      "Bash(curl -s -c /tmp/jar.txt -A \"Mozilla/5.0\" \"https://analytics.digitalplat.org/static/analytics.js\" -o /dev/null)",
+      "Bash(grep -v \"^$\")",
+      "Bash(curl -s -b /tmp/jar.txt -X POST \"https://analytics.digitalplat.org/a/collect\" -H \"Content-Type: application/json\" -H \"Origin: https://jdfcc.dpdns.org\" -d '{\"property\":\"dpa_0CSzpZU7XbnWhpDQQZRnuOnpbMh9m0k\",\"event\":\"page_view\",\"url\":\"https://example.com/docs\"}')"
     ]
   }
 }

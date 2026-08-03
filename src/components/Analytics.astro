@@ -1,9 +1,10 @@
 ---
 // DigitalPlat Analytics 统计。
-// 其服务端 /a/collect 的 CORS 预检响应缺少 `Access-Control-Allow-Credentials: true`，
-// 而官方 analytics.js 用 sendBeacon（强制 credentials include）+ application/json 发送，
-// 会触发带凭证的预检并被浏览器拦截。这里在脚本加载前拦截对该域名的请求，
-// 改走 no-cors 模式（不预检、不校验响应），彻底消除控制台的 CORS 报错。
+// 官方 analytics.js 用 sendBeacon 上报，而 sendBeacon 强制以 credentials=include 发送，
+// 但其服务端 /a/collect 的预检响应缺少 `Access-Control-Allow-Credentials: true`，
+// 于是带凭证的请求被浏览器拦截报 CORS 错。实测该端点在【不带凭证】的普通 fetch 下
+// 完全正常（预检通过、事件正常入库，无需 server key）。这里在脚本加载前拦截对该域名的
+// 请求，改用标准 cors + credentials:'omit' 发送，既消除报错，PV 又能真正记录。
 const ANALYTICS_ORIGIN = 'https://analytics.digitalplat.org';
 const ANALYTICS_SRC = `${ANALYTICS_ORIGIN}/static/analytics.js`;
 const ANALYTICS_PROPERTY = 'dpa_0CSzpZU7XbnWhpDQQZRnuOnpbMh9m0k';
@@ -20,13 +21,22 @@ const ANALYTICS_PROPERTY = 'dpa_0CSzpZU7XbnWhpDQQZRnuOnpbMh9m0k';
       }
     };
 
-    // 拦截 sendBeacon：官方脚本优先走这里。改用 no-cors fetch 发送，避免带凭证的 CORS 预检。
+    var nativeFetch = window.fetch && window.fetch.bind(window);
+
+    // 拦截 sendBeacon：官方脚本优先走这里。sendBeacon 无法关闭凭证，
+    // 因此改用不带凭证的普通 fetch 上报（内容类型保持 application/json）。
     var nativeBeacon = navigator.sendBeacon && navigator.sendBeacon.bind(navigator);
-    if (nativeBeacon) {
+    if (nativeBeacon && nativeFetch) {
       navigator.sendBeacon = function (url, data) {
         if (isAnalytics(url)) {
           try {
-            fetch(url, { method: 'POST', body: data, mode: 'no-cors', credentials: 'omit', keepalive: true }).catch(function () {});
+            nativeFetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: data,
+              credentials: 'omit',
+              keepalive: true,
+            }).catch(function () {});
             return true;
           } catch (e) {
             return false;
@@ -36,13 +46,12 @@ const ANALYTICS_PROPERTY = 'dpa_0CSzpZU7XbnWhpDQQZRnuOnpbMh9m0k';
       };
     }
 
-    // 拦截 fetch：官方脚本在无 sendBeacon 时的兜底路径，同样强制 no-cors。
-    var nativeFetch = window.fetch && window.fetch.bind(window);
+    // 拦截 fetch：官方脚本在无 sendBeacon 时的兜底路径，同样去掉凭证。
     if (nativeFetch) {
       window.fetch = function (input, init) {
         var url = typeof input === 'string' ? input : (input && input.url);
         if (url && isAnalytics(url)) {
-          init = Object.assign({}, init, { mode: 'no-cors', credentials: 'omit' });
+          init = Object.assign({}, init, { credentials: 'omit' });
         }
         return nativeFetch(input, init);
       };
