@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeSection from '@/components/HomeSection.astro';
+import Analytics from '@/components/Analytics.astro';
 import { getAllPosts, getHomeSections } from '@/lib/posts';
 
 const posts = await getAllPosts();
@@ -42,7 +43,7 @@ const latestUpdated = posts[0]?.data.created;
     </div>
   </div>
 
-  <script defer src="https://analytics.digitalplat.org/static/analytics.js" data-property="dpa_0CSzpZU7XbnWhpDQQZRnuOnpbMh9m0k"></script>
+  <Analytics />
 
   <script is:inline>
     const homeSections = Array.from(document.querySelectorAll('[data-home-section]'));

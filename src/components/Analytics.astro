@@ -1,0 +1,53 @@
+---
+// DigitalPlat Analytics 统计。
+// 其服务端 /a/collect 的 CORS 预检响应缺少 `Access-Control-Allow-Credentials: true`，
+// 而官方 analytics.js 用 sendBeacon（强制 credentials include）+ application/json 发送，
+// 会触发带凭证的预检并被浏览器拦截。这里在脚本加载前拦截对该域名的请求，
+// 改走 no-cors 模式（不预检、不校验响应），彻底消除控制台的 CORS 报错。
+const ANALYTICS_ORIGIN = 'https://analytics.digitalplat.org';
+const ANALYTICS_SRC = `${ANALYTICS_ORIGIN}/static/analytics.js`;
+const ANALYTICS_PROPERTY = 'dpa_0CSzpZU7XbnWhpDQQZRnuOnpbMh9m0k';
+---
+
+<script is:inline define:vars={{ ANALYTICS_ORIGIN, ANALYTICS_SRC, ANALYTICS_PROPERTY }}>
+  (function () {
+    var origin = ANALYTICS_ORIGIN;
+    var isAnalytics = function (url) {
+      try {
+        return new URL(url, window.location.href).origin === origin;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    // 拦截 sendBeacon：官方脚本优先走这里。改用 no-cors fetch 发送，避免带凭证的 CORS 预检。
+    var nativeBeacon = navigator.sendBeacon && navigator.sendBeacon.bind(navigator);
+    if (nativeBeacon) {
+      navigator.sendBeacon = function (url, data) {
+        if (isAnalytics(url)) {
+          try {
+            fetch(url, { method: 'POST', body: data, mode: 'no-cors', credentials: 'omit', keepalive: true }).catch(function () {});
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+        return nativeBeacon(url, data);
+      };
+    }
+
+    // 拦截 fetch：官方脚本在无 sendBeacon 时的兜底路径，同样强制 no-cors。
+    var nativeFetch = window.fetch && window.fetch.bind(window);
+    if (nativeFetch) {
+      window.fetch = function (input, init) {
+        var url = typeof input === 'string' ? input : (input && input.url);
+        if (url && isAnalytics(url)) {
+          init = Object.assign({}, init, { mode: 'no-cors', credentials: 'omit' });
+        }
+        return nativeFetch(input, init);
+      };
+    }
+  })();
+</script>
+
+<script defer src={ANALYTICS_SRC} data-property={ANALYTICS_PROPERTY}></script>
