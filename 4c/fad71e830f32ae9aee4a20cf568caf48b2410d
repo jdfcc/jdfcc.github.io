@@ -1,0 +1,28 @@
+src/styles/global.css
+  2d13112e3ab7006e 1-32,42-51,57-89,104-106,109-111,126-163,192,202,212,217-222,237-245,261-300,371,384,443-444,514,529-586,591-592,596,603,607,609,637-638,657,661-666,674-678,691-693,701-702,716-717,724-743,785-786,804-807,813,815-817,829-830,837-843,845,851-856,861,865-870,873-874,876,889-890,895,897,905-919,931,946-956,979,1072-1082,1085,1116-1125,1143,1185,1214-1232,1272-1280
+public/fonts/LICENSE-ibm-plex-mono.txt
+  2d13112e3ab7006e 1-93
+public/fonts/LICENSE-instrument-sans.txt
+  2d13112e3ab7006e 1-93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.18",
+  "base_commit_sha": "4cfad71e830f32ae9aee4a20cf568caf48b2410d",
+  "prompts": {
+    "2d13112e3ab7006e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a181bd-9854-7062-ba51-9b7c1bc3b15f",
+        "model": "lw-deepseek/deepseek-v4.1-flash"
+      },
+      "human_author": "jdfcc <3039898075@qq.com>",
+      "messages": [],
+      "total_additions": 302,
+      "total_deletions": 30,
+      "accepted_lines": 1125,
+      "overriden_lines": 0,
+      "messages_url": "http://106.14.183.34:38080/cas/6371376e6ad43db498e2fc15ee12cc36d35b47d97be0c4595b31db9381021692"
+    }
+  }
+}
