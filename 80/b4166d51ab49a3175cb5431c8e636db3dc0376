@@ -1,0 +1,50 @@
+src/content/posts/2026-10-28-03-portal-backend-development-standards.md
+  2d13112e3ab7006e 1-633
+_posts/2026-10-28-05-portal-directory-guide.md
+  2d13112e3ab7006e 1-963
+src/pages/[...permalink].astro
+  2d13112e3ab7006e 5,31
+src/content/posts/2026-10-28-04-portal-frontend-development-standards.md
+  2d13112e3ab7006e 1-635
+src/content/posts/2026-10-28-05-portal-directory-guide.md
+  2d13112e3ab7006e 1-964
+_posts/2026-10-28-00-portal-four-project-development-manual.md
+  2d13112e3ab7006e 1-107
+_posts/2026-10-28-02-portal-integration-and-configuration-standards.md
+  2d13112e3ab7006e 1-657
+_posts/2026-10-28-03-portal-backend-development-standards.md
+  2d13112e3ab7006e 1-632
+src/content/posts/2026-10-28-02-portal-integration-and-configuration-standards.md
+  2d13112e3ab7006e 1-658
+src/components/MermaidRenderer.astro
+  2d13112e3ab7006e 1-94
+_posts/2026-10-28-01-portal-system-overview-and-terminology.md
+  2d13112e3ab7006e 1-317
+_posts/2026-10-28-04-portal-frontend-development-standards.md
+  2d13112e3ab7006e 1-634
+src/content/posts/2026-10-28-00-portal-four-project-development-manual.md
+  2d13112e3ab7006e 1-108
+src/content/posts/2026-10-28-01-portal-system-overview-and-terminology.md
+  2d13112e3ab7006e 1-318
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.18",
+  "base_commit_sha": "80b4166d51ab49a3175cb5431c8e636db3dc0376",
+  "prompts": {
+    "2d13112e3ab7006e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a181bd-9854-7062-ba51-9b7c1bc3b15f",
+        "model": "lw-deepseek/deepseek-v4.1-flash"
+      },
+      "human_author": "jdfcc <3039898075@qq.com>",
+      "messages": [],
+      "total_additions": 7187,
+      "total_deletions": 64,
+      "accepted_lines": 7966,
+      "overriden_lines": 0,
+      "messages_url": "http://106.14.183.34:38080/cas/32b8f1005e324141575a0aa99406e4c53d88cab287ee228192e320d5e6acc544"
+    }
+  }
+}
