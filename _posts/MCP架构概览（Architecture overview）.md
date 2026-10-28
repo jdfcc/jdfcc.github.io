@@ -1,3 +1,11 @@
+---
+title: MCP架构概览（Architecture-overview）
+created: '2026-08-11'
+tags: []
+slug: MCP架构概览（Architecture-overview）
+permalink: /2026/08/11/MCP架构概览（Architecture-overview）/
+---
+
 # 架构概览（Architecture overview）
 
 这份概览介绍了 **模型上下文协议（Model Context Protocol，MCP）** 的范围、核心概念，并通过一个示例说明每个核心概念。

@@ -1,3 +1,11 @@
+---
+title: 抓取smtp服务SSL证书
+created: '2026-03-24'
+tags: []
+slug: 抓取smtp服务SSL证书
+permalink: /2026/03/24/抓取smtp服务SSL证书/
+---
+
  **一键脚本**，可以直接把 SMTP 服务器证书保存为 `server.crt` 文件：
 
 ------

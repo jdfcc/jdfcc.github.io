@@ -1,3 +1,11 @@
+---
+title: OpenSpec命令是如何工作的
+created: '2026-08-11'
+tags: []
+slug: OpenSpec命令是如何工作的
+permalink: /2026/08/11/OpenSpec命令是如何工作的/
+---
+
 # 命令是如何工作的
 
 **首先只需要记住一件事：OpenSpec 有两种命令，它们运行在两个不同的地方。**

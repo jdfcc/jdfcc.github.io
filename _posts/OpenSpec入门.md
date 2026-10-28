@@ -1,3 +1,11 @@
+---
+title: OpenSpec入门
+created: '2026-08-11'
+tags: []
+slug: OpenSpec入门
+permalink: /2026/08/11/OpenSpec入门/
+---
+
 - # 快速入门
 
   本指南介绍安装并初始化 OpenSpec 后如何使用它。
