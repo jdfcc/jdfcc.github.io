@@ -18,28 +18,51 @@ const { title = "Jdfcc", description = "随笔" } =
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+    <script is:inline>
+      (() => {
+        try {
+          const savedTheme = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.dataset.theme = savedTheme ?? (prefersDark ? 'dark' : 'light');
+        } catch {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
     <div class="site-shell">
       <header class="site-header" data-site-header>
         <div class="site-identity">
           <a class="site-brand" href="/">jdfcc</a>
           <p class="site-meta">notes, writings, experiments</p>
         </div>
-        <nav class="site-nav" aria-label="主导航">
-          <a href="/">index</a>
-          <a href="/about/">about</a>
-        </nav>
-        <button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false" data-nav-toggle>
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+        <div class="site-actions">
+          <nav class="site-nav" aria-label="主导航">
+            <a href="/" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>index</a>
+            <a href="/about/" aria-current={Astro.url.pathname === '/about/' ? 'page' : undefined}>about</a>
+          </nav>
+          <button class="theme-toggle" type="button" aria-label="切换到暗色模式" aria-pressed="false" data-theme-toggle>
+            <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="3.5"></circle>
+              <path d="M12 2.5v2M12 19.5v2M4.5 12h-2M21.5 12h-2M5.3 5.3 3.9 3.9M20.1 20.1l-1.4-1.4M18.7 5.3l1.4-1.4M3.9 20.1l1.4-1.4"></path>
+            </svg>
+            <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <path d="M20.2 15.3A8.3 8.3 0 0 1 8.7 3.8 8.3 8.3 0 1 0 20.2 15.3Z"></path>
+            </svg>
+          </button>
+          <button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false" data-nav-toggle>
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
       </header>
 
       <div class="drawer-scrim" data-drawer-scrim aria-hidden="true"></div>
 
-      <main class="site-main">
+      <main class="site-main" id="main-content" tabindex="-1">
         <slot />
       </main>
 
@@ -66,19 +89,48 @@ const { title = "Jdfcc", description = "随笔" } =
         const toggle = document.querySelector('[data-nav-toggle]');
         const scrim = document.querySelector('[data-drawer-scrim]');
         const drawer = document.querySelector('[data-mobile-drawer]');
+        const themeToggle = document.querySelector('[data-theme-toggle]');
         const mobileQuery = window.matchMedia('(max-width: 860px)');
+        let drawerReturnFocus = null;
+
+        const getDrawerFocusables = () =>
+          drawer
+            ? Array.from(drawer.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+            : [];
+
+        const syncThemeToggle = () => {
+          const isDark = document.documentElement.dataset.theme === 'dark';
+          themeToggle?.setAttribute('aria-pressed', String(isDark));
+          themeToggle?.setAttribute('aria-label', isDark ? '切换到亮色模式' : '切换到暗色模式');
+        };
+
+        themeToggle?.addEventListener('click', () => {
+          const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+          document.documentElement.dataset.theme = nextTheme;
+          try {
+            localStorage.setItem('theme', nextTheme);
+          } catch {}
+          syncThemeToggle();
+        });
+        syncThemeToggle();
 
         const openDrawer = () => {
           if (!drawer) return;
           document.body.classList.add('drawer-open');
           toggle?.setAttribute('aria-expanded', 'true');
+          toggle?.setAttribute('aria-label', '关闭目录');
+          drawerReturnFocus = document.activeElement;
           // keep header visible while the menu is open
           header?.classList.remove('is-hidden');
+          window.setTimeout(() => getDrawerFocusables()[0]?.focus(), 50);
         };
 
         const closeDrawer = () => {
           document.body.classList.remove('drawer-open');
           toggle?.setAttribute('aria-expanded', 'false');
+          toggle?.setAttribute('aria-label', '打开目录');
+          if (drawerReturnFocus instanceof HTMLElement) drawerReturnFocus.focus();
+          drawerReturnFocus = null;
         };
 
         const toggleDrawer = () => {
@@ -98,6 +150,26 @@ const { title = "Jdfcc", description = "随笔" } =
           });
           document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') closeDrawer();
+            if (event.key !== 'Tab' || !document.body.classList.contains('drawer-open')) return;
+
+            const focusables = getDrawerFocusables();
+            if (focusables.length === 0) return;
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+
+            if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              toggle?.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              toggle?.focus();
+            } else if (event.shiftKey && document.activeElement === toggle) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === toggle) {
+              event.preventDefault();
+              first.focus();
+            }
           });
         } else {
           // no drawer content on this page: hide the toggle entirely

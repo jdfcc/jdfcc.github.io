@@ -17,7 +17,11 @@ const serial = String(index + 1).padStart(2, '0');
   </div>
   <ul class="post-list">
     {section.posts.map((post) => (
-      <li class="post-list-item">
+      <li
+        class="post-list-item"
+        data-home-post
+        data-search={`${section.name} ${post.data.title} ${post.data.description ?? ''}`}
+      >
         <a class="post-link" href={post.data.permalink.replace(/\/+$/, '')}>
           <div class="post-link-main">
             <span class="post-link-title">{post.data.title}</span>

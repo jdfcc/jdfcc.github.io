@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "check": "astro check",
+    "dev": "npm run migrate-posts && astro dev",
+    "start": "npm run migrate-posts && astro dev",
+    "build": "npm run migrate-posts && astro build",
+    "preview": "npm run migrate-posts && astro preview",
+    "check": "npm run migrate-posts && astro check",
     "migrate-posts": "node ./scripts/migrate-posts.mjs"
   },
   "dependencies": {

@@ -1,7 +1,9 @@
 ---
 title: 理解 MCP Server
 created: '2026-08-11'
-tags: []
+tags:
+  - AI
+  - MCP
 slug: 理解-MCP-Server
 permalink: /2026/03/24/理解 MCP Server/
 description: MCP Server 是一种通过标准化协议接口，向 AI 应用程序提供特定能力的程序。

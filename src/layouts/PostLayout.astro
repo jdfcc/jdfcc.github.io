@@ -21,6 +21,7 @@ const pageTitle = `${post.data.title} · Jdfcc`;
 ---
 
 <BaseLayout title={pageTitle} description={description}>
+  <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
   <div class="post-layout">
     <aside class="post-sidebar" aria-label="文章目录" data-mobile-drawer={toc.length > 0 ? '' : undefined}>
       {toc.length > 0 && (
@@ -84,6 +85,28 @@ const pageTitle = `${post.data.title} · Jdfcc`;
   </div>
 
   <script is:inline>
+    const readingProgress = document.querySelector('[data-reading-progress]');
+    const postContent = document.querySelector('.post-page');
+
+    if (readingProgress && postContent) {
+      let progressTicking = false;
+      const updateReadingProgress = () => {
+        const start = postContent.offsetTop;
+        const distance = Math.max(postContent.scrollHeight - window.innerHeight, 1);
+        const progress = Math.min(1, Math.max(0, (window.scrollY - start) / distance));
+        readingProgress.style.transform = `scaleX(${progress})`;
+        progressTicking = false;
+      };
+
+      window.addEventListener('scroll', () => {
+        if (progressTicking) return;
+        progressTicking = true;
+        window.requestAnimationFrame(updateReadingProgress);
+      }, { passive: true });
+      window.addEventListener('resize', updateReadingProgress, { passive: true });
+      updateReadingProgress();
+    }
+
     const tocHeadings = Array.from(document.querySelectorAll('.post-content h2[id], .post-content h3[id]'));
     const tocLinks = new Map(
       Array.from(document.querySelectorAll('[data-toc-link]')).map((link) => [link.getAttribute('data-toc-link'), link]),

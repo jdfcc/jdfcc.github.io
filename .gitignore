@@ -31,6 +31,14 @@ Temporary Items
 /node_modules
 # End of https://www.gitignore.io/api/macos
 
+# Local agent settings and Python caches
+.claude/settings.local.json
+__pycache__/
+*.py[cod]
+.pytest_cache/
+!**/icon/
+!**/icon/**
+
 # build output
 _site
 .astro
